@@ -1,8 +1,6 @@
-alternaleds
-
-
-
 #include <msp430.h> 
+
+int led1_is_on=0,led2_is_on=0, invalid=0;
 
 /*
  * main.c
@@ -25,16 +23,25 @@ int main(void) {
         P2REN |= BIT1;          // Marca a entrada do pino P2.1 com resistor.
         P2OUT |= BIT1;         // Marca o resistor da entrada P2.1 como pulldown.
 
-        P1IES &= ~BIT1;
-        P1IFG &= ~BIT1;
-        P1IE |= BIT1;
+        P2DIR &= ~BIT5;         // Marca o pino P2.5 como entrada.
+        P2REN |= BIT5;          // Marca a entrada do pino P2.5 com resistor.
+        P2OUT |= BIT5;         // Marca o resistor da entrada P2.5 como pulldown.
 
-        P2IES &= ~BIT1;
-        P2IFG &= ~BIT1;
-        P2IE |= BIT1;
+
+        P1IES |= BIT1;          // Interrupt no high
+        P1IFG &= ~BIT1;         // limpando a flag do interrupt
+        P1IE |= BIT1;           // ativando o interrupt do botao s2
+
+        P2IES |= BIT1;          // Interrupt no high
+        P2IFG &= ~BIT1;         // limpando a flag do interrupt
+        P2IE |= BIT1;           // ativando o interrupt do botao s1
+
+        P2IES |= BIT5;          // Interrupt no high
+        P2IFG &= ~BIT5;         // limpando a flag do interrupt
+        P2IE |= BIT5;           // ativando o interrupt do pino 2.5
 
         __no_operation();
-        __bis_SR_register( LPM4_bits+GIE );
+        __bis_SR_register( LPM4_bits+GIE );         //low power e ativa todos interrupts
         __no_operation();
 
 	return 0;
@@ -44,9 +51,25 @@ int main(void) {
 __interrupt void Port_1(void){
     switch ( __even_in_range( P1IV, P1IV_P1IFG7 )){
         case P1IV_P1IFG1:
-            P1OUT ^= BIT0;
-            __delay_cycles(40000);
-            P1IFG &= ~BIT1;
+            if(!led1_is_on && !invalid){
+                P4OUT ^= BIT7;                      //Alterna o led (deveria só ligar
+                led2_is_on = ~led2_is_on;           //mas assim gera tolerancia a falhas de debouncing)
+                __delay_cycles(2000);               //debouncing
+                P1IFG &= ~BIT1;                     //limpa flag de interrupçao
+                P1IES ^= BIT1;                      //marca a interrupçao pra quando soltar o botao
+            }else if(invalid) {
+                //tratamento de situaçoes anormais
+                __delay_cycles(2000);               //como 2 botoes simultaneos e erros de debouncing
+                P1IFG &= ~BIT1;
+                P1IES ^= BIT1;
+                invalid=0;
+            }else {                                 //identificado os dois botoes simultaneos
+                P1OUT &= ~BIT0;
+                led1_is_on = 0;                     //desliga o led que estava ligado
+                __delay_cycles(2000);
+                P1IFG &= ~BIT1;
+                invalid=1;
+            }
             break;
         default:
             _never_executed();
@@ -55,12 +78,44 @@ __interrupt void Port_1(void){
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void){
     switch (__even_in_range( P2IV, P2IV_P2IFG7 )){
-            case P2IV_P2IFG1:
-                P4OUT ^= BIT7;
-                __delay_cycles(40000);
+        case P2IV_P2IFG1:
+            if(!led2_is_on && !invalid){
+                P1OUT ^= BIT0;
+                led1_is_on = ~led1_is_on;
+                __delay_cycles(2000);
                 P2IFG &= ~BIT1;
-                break;
-            default:
-                _never_executed();
+                P2IES ^= BIT1;
+            }else if(invalid) {
+                __delay_cycles(2000);
+                P2IFG &= ~BIT1;
+                P2IES ^= BIT1;
+                invalid=0;
+            }else {
+                P4OUT &= ~BIT7;
+                led2_is_on = 0;
+                __delay_cycles(2000);
+                P2IFG &= ~BIT1;
+                invalid=1;
+            }
+            break;
+        case P2IV_P2IFG5:               //tratamento do sinal de parada
+            if(!(led2_is_on && led1_is_on)){// liga os dois leds e espera terminar o sinal
+                P4OUT |= BIT7;
+                led2_is_on=1;
+                P1OUT |= BIT0;
+                led1_is_on=1;
+            }else{
+                P4OUT &= ~BIT7;//desligando os dois leds
+                led2_is_on=0;
+                P1OUT &= ~BIT0;
+                led1_is_on=0;
+            }
+            __delay_cycles(2000);
+            P2IFG &= ~BIT5;
+            P2IES ^= BIT5;
+            invalid=1;          //sinalizando para o tratamento de erros eventuais
+            break;
+        default:
+            _never_executed();
     }
 }
