@@ -2,12 +2,12 @@
 <link_info>
    <banner>MSP430 Linker Unix v16.9.1.LTS</banner>
    <copyright>Copyright (c) 2003-2015 Texas Instruments Incorporated</copyright>
-   <link_time>0x5922f4ca</link_time>
+   <link_time>0x5922ff5a</link_time>
    <link_errors>0x0</link_errors>
    <output_file>LabSM-exp4-prog13.out</output_file>
    <entry_point>
       <name>_c_int00_noinit_noargs_noexit</name>
-      <address>0x443e</address>
+      <address>0x4442</address>
    </entry_point>
    <input_file_list>
       <input_file id="fl-2">
@@ -308,27 +308,27 @@
          <name>.text:_isr:Port_2</name>
          <load_address>0x4400</load_address>
          <run_address>0x4400</run_address>
-         <size>0x20</size>
+         <size>0x22</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
       <object_component id="oc-3e4">
          <name>.text:_isr:Port_1</name>
-         <load_address>0x4420</load_address>
-         <run_address>0x4420</run_address>
-         <size>0x1e</size>
+         <load_address>0x4422</load_address>
+         <run_address>0x4422</run_address>
+         <size>0x20</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
       <object_component id="oc-c5">
          <name>.text:_isr:_c_int00_noinit_noargs_noexit</name>
-         <load_address>0x443e</load_address>
-         <run_address>0x443e</run_address>
+         <load_address>0x4442</load_address>
+         <run_address>0x4442</run_address>
          <size>0x12</size>
          <input_file_ref idref="fl-24"/>
       </object_component>
       <object_component id="oc-3d9">
          <name>.text:_isr:__TI_ISR_TRAP</name>
-         <load_address>0x4450</load_address>
-         <run_address>0x4450</run_address>
+         <load_address>0x4454</load_address>
+         <run_address>0x4454</run_address>
          <size>0x8</size>
          <input_file_ref idref="fl-3e"/>
       </object_component>
@@ -921,7 +921,7 @@
          <name>.text:_isr</name>
          <load_address>0x4400</load_address>
          <run_address>0x4400</run_address>
-         <size>0x58</size>
+         <size>0x5c</size>
          <contents>
             <object_component_ref idref="oc-3de"/>
             <object_component_ref idref="oc-3e4"/>
@@ -1652,7 +1652,7 @@
          <name>SEGMENT_1</name>
          <load_address>0x4400</load_address>
          <run_address>0x4400</run_address>
-         <size>0x58</size>
+         <size>0x5c</size>
          <flags>0x5</flags>
          <contents>
             <logical_group_ref idref="lg-8"/>
@@ -1806,8 +1806,8 @@
          <page_id>0x0</page_id>
          <origin>0x4400</origin>
          <length>0xbb80</length>
-         <used_space>0x58</used_space>
-         <unused_space>0xbb28</unused_space>
+         <used_space>0x5c</used_space>
+         <unused_space>0xbb24</unused_space>
          <attributes>RWIX</attributes>
          <usage_details>
             <allocated_space>
@@ -1817,12 +1817,12 @@
             </allocated_space>
             <allocated_space>
                <start_address>0x4400</start_address>
-               <size>0x58</size>
+               <size>0x5c</size>
                <logical_group_ref idref="lg-8"/>
             </allocated_space>
             <available_space>
-               <start_address>0x4458</start_address>
-               <size>0xbb28</size>
+               <start_address>0x445c</start_address>
+               <size>0xbb24</size>
             </available_space>
          </usage_details>
       </memory_area>
@@ -5695,7 +5695,7 @@
       </symbol>
       <symbol id="sm-375">
          <name>Port_1</name>
-         <value>0x4420</value>
+         <value>0x4422</value>
          <object_component_ref idref="oc-3e4"/>
       </symbol>
       <symbol id="sm-376">
@@ -5720,7 +5720,7 @@
       </symbol>
       <symbol id="sm-38a">
          <name>_c_int00_noinit_noargs_noexit</name>
-         <value>0x443e</value>
+         <value>0x4442</value>
          <object_component_ref idref="oc-c5"/>
       </symbol>
       <symbol id="sm-397">
@@ -5835,7 +5835,7 @@
       </symbol>
       <symbol id="sm-3dd">
          <name>__TI_ISR_TRAP</name>
-         <value>0x4450</value>
+         <value>0x4454</value>
          <object_component_ref idref="oc-3d9"/>
       </symbol>
       <symbol id="sm-3ed">

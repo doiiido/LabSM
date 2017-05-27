@@ -41,7 +41,7 @@ __interrupt void Port_1(void){
     switch ( __even_in_range( P1IV, P1IV_P1IFG7 )){
         case P1IV_P1IFG1:
             P1OUT ^= BIT0;
-            __delay_cycles(40000);
+            __delay_cycles(5000);
             P1IFG &= ~BIT1;
             break;
         default:
@@ -53,7 +53,7 @@ __interrupt void Port_2(void){
     switch (__even_in_range( P2IV, P2IV_P2IFG7 )){
             case P2IV_P2IFG1:
                 P4OUT ^= BIT7;
-                __delay_cycles(40000);
+                __delay_cycles(5000);
                 P2IFG &= ~BIT1;
                 break;
             default:
