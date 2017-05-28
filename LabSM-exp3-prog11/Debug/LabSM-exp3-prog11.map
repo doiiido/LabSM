@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker Unix v16.9.1                   
 ******************************************************************************
->> Linked Sun May 28 15:27:16 2017
+>> Linked Sun May 28 18:12:09 2017
 
 OUTPUT FILE NAME:   <LabSM-exp3-prog11.out>
 ENTRY POINT SYMBOL: "RESET"  address: 00004400
@@ -20,7 +20,7 @@ MEMORY CONFIGURATION
   INFOA                 00001980   00000080  00000000  00000080  RWIX
   USBRAM                00001c00   00000800  00000000  00000800  RWIX
   RAM                   00002400   00002000  00000000  00002000  RWIX
-  FLASH                 00004400   0000bb80  000000d6  0000baaa  RWIX
+  FLASH                 00004400   0000bb80  00000170  0000ba10  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -95,12 +95,12 @@ section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
 .stack     0    00004400    00000000     
 
-.text      0    00004400    000000ce     
-                  00004400    000000ce     main.obj (.text)
+.text      0    00004400    00000168     
+                  00004400    00000168     main.obj (.text)
 
 .text:_isr 
-*          0    000044ce    00000008     
-                  000044ce    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
+*          0    00004568    00000008     
+                  00004568    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
 
 .cinit     0    00004400    00000000     UNINITIALIZED
 
@@ -134,7 +134,7 @@ PORT1      0    0000ffde    00000002
 
 TIMER1_A1 
 *          0    0000ffe0    00000002     
-                  0000ffe0    00000002     rts430x_sc_sd_eabi.lib : int48.obj (.int48)
+                  0000ffe0    00000002     main.obj (.int48)
 
 TIMER1_A0 
 *          0    0000ffe2    00000002     
@@ -191,9 +191,9 @@ MODULE SUMMARY
        Module         code   ro data   rw data
        ------         ----   -------   -------
     ./
-       main.obj       206    8         0      
+       main.obj       360    10        0      
     +--+--------------+------+---------+---------+
-       Total:         206    8         0      
+       Total:         360    10        0      
                                               
     /home/lincoln/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.1.LTS/lib/rts430x_sc_sd_eabi.lib
        isr_trap.obj   8      0         0      
@@ -202,7 +202,6 @@ MODULE SUMMARY
        int44.obj      0      2         0      
        int45.obj      0      2         0      
        int46.obj      0      2         0      
-       int48.obj      0      2         0      
        int49.obj      0      2         0      
        int50.obj      0      2         0      
        int51.obj      0      2         0      
@@ -217,10 +216,10 @@ MODULE SUMMARY
        int61.obj      0      2         0      
        int62.obj      0      2         0      
     +--+--------------+------+---------+---------+
-       Total:         8      38        0      
+       Total:         8      36        0      
                                               
     +--+--------------+------+---------+---------+
-       Grand Total:   214    46        0      
+       Grand Total:   368    46        0      
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -978,7 +977,7 @@ address   name
 0000015c  WDTCTL_L            
 00004400  __STACK_END         
 00000000  __STACK_SIZE        
-000044ce  __TI_ISR_TRAP       
+00004568  __TI_ISR_TRAP       
 0000ffd2  __TI_int41          
 0000ffd4  __TI_int42          
 0000ffd6  __TI_int43          
@@ -1762,7 +1761,7 @@ address   name
 000023ff  USBIEPSIZXY_7       
 00004400  RESET               
 00004400  __STACK_END         
-000044ce  __TI_ISR_TRAP       
+00004568  __TI_ISR_TRAP       
 0000ffd2  __TI_int41          
 0000ffd4  __TI_int42          
 0000ffd6  __TI_int43          

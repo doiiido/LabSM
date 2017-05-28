@@ -27,8 +27,9 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 ;Alunos: Lincoln Abreu Barbosa 140045023
 ;        Bruno Freitas Feitosa Nunes 120112388
 
-            mov #0, R5
-            mov #0, R6
+            mov		#0, R5
+            mov 	#0, R6
+            mov 	#0, R9
 
             bis.b   #BIT0, &P1DIR           ; Marca o LED em P1.0 como saida.
             bic.b   #BIT0, &P1OUT           ; Marca o LED como desligado para comessar certo.
@@ -60,11 +61,15 @@ S2_ISR:
             cmp.b   #1, R5
             jeq     Fim_ISRS2
             inc R5
+            cmp	#1, R6
+            jeq	pisca2
             xor.b   #BIT7, &P4OUT           ; Alterna o LED P4.7
             jmp     Debouncing_Timer
             reti                            ; Volta pra interrupcao
 
 Fim_ISRS2:  mov #0, R5
+            cmp	#1, R9
+            jeq	pisca2
             jmp     Debouncing_Timer
             reti
 
@@ -73,13 +78,35 @@ S1_ISR:
             cmp.b   #1, R6
             jeq     Fim_ISRS1
             inc R6
+            cmp	#1, R5
+            jeq	pisca2
             xor.b   #BIT0, &P1OUT           ; Alterna o LED P1.0
             jmp     Debouncing_Timer
 
 Fim_ISRS1:  mov #0, R6
+            cmp	#1, R9
+            jeq	pisca2
             jmp     Debouncing_Timer
 
+pisca2:
+			cmp.b 	#0, R9
+			jeq		Timer
+			cmp 	#1, R5
+			jeq		no_operation
+			cmp 	#1, R6
+			jeq		no_operation
+			mov.b	R7, P1OUT
+			mov.b	R8, P4OUT
+            bic.b   #BIT1, &P2IFG           ; Reseta o sinal de interrupcao.
+            bic.b   #BIT1, &P1IFG           ; Reseta o sinal de interrupcao.
+			bic.w   #TAIFG, &TA1CTL         ; Reseta o sinal de interrup�ao.
+            bic.w   #TAIE, &TA1CTL          ; Desativa a interrupcao do timer TA1.
+            mov #0, R5
+            mov #0, R6
+            mov #0, R9
+            reti
 
+no_operation:	nop
 
 Debouncing_Timer:
             bis.w   #TACLR, &TA0CTL         ; Limpa o timer TA.
@@ -106,6 +133,37 @@ DebouncingISR:
             bic.b   #BIT1, &P1IFG           ; Reseta o sinal de interrupcao.
             reti                            ;volta pra interrup�ao
 
+Timer:
+			mov.b	P1OUT, R7
+			mov.b	P4OUT, R8
+			bic.b   #BIT1, &P2IES
+			bic.b   #BIT1, &P1IES
+			bis.b   #BIT0, &P1OUT
+			bic.b   #BIT7, &P4OUT
+			mov.b	#1, R5
+			mov.b	#1, R6
+			mov.b	#1, R9
+            bis.w   #TACLR, &TA1CTL         ; Limpa o timer TA1.
+
+            bis.w   #TASSEL_1, &TA1CTL      ; Usando ACLK (32768 Hz).
+            bic.w   #ID_0, &TA1CTL          ; Divide por 1.
+            bis.b   #TAIDEX_0, &TA1EX0      ; Divide por 1 (extendido).
+
+            bis.w   #TAIE, &TA1CTL          ; Ativa a interrupcao do timer TA1.
+
+            bis.w	#16384, &TA1CCR0		; Marca o TA0CCR0 como 16384, resultando em uma chamada de 2Hz
+                                            ; da rotina
+            bis.w   #MC_1, &TA1CTL          ; Marca o modo de timer para contar ate TA1CCR0.
+
+TimerISR:
+            bic.b   #BIT1, &P2IFG           ; Reseta o sinal de interrupcao.
+            bic.b   #BIT1, &P1IFG           ; Reseta o sinal de interrupcao.
+            bic.w   #TAIFG, &TA1CTL         ; Reseta o sinal de interrup�ao.
+            xor.b   #BIT0, &P1OUT           ; Alterna o LED P1.0
+            xor.b   #BIT7, &P4OUT           ; Alterna o LED P4.7
+
+            reti                            ;volta pra interrup�ao
+
 
 ;Interrupt Config:
            .sect    ".int47"   ; added this line
@@ -114,6 +172,8 @@ DebouncingISR:
            .short   S1_ISR  ; added this line
            .sect    ".int52"
            .short   DebouncingISR
+           .sect    ".int48"
+           .short   TimerISR
 ;-------------------------------------------------------------------------------
 ; Stack Pointer definition
 ;-------------------------------------------------------------------------------
