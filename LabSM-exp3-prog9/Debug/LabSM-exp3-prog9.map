@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker Unix v16.9.1                   
 ******************************************************************************
->> Linked Mon May 22 11:31:58 2017
+>> Linked Sun May 28 12:11:51 2017
 
 OUTPUT FILE NAME:   <LabSM-exp3-prog9.out>
 ENTRY POINT SYMBOL: "RESET"  address: 00004400
@@ -20,7 +20,7 @@ MEMORY CONFIGURATION
   INFOA                 00001980   00000080  00000000  00000080  RWIX
   USBRAM                00001c00   00000800  00000000  00000800  RWIX
   RAM                   00002400   00002000  00000000  00002000  RWIX
-  FLASH                 00004400   0000bb80  00000064  0000bb1c  RWIX
+  FLASH                 00004400   0000bb80  000000b4  0000bacc  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -95,12 +95,12 @@ section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
 .stack     0    00004400    00000000     
 
-.text      0    00004400    0000005c     
-                  00004400    0000005c     main.obj (.text)
+.text      0    00004400    000000ac     
+                  00004400    000000ac     main.obj (.text)
 
 .text:_isr 
-*          0    0000445c    00000008     
-                  0000445c    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
+*          0    000044ac    00000008     
+                  000044ac    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
 
 .cinit     0    00004400    00000000     UNINITIALIZED
 
@@ -113,7 +113,7 @@ RTC        0    0000ffd2    00000002
                   0000ffd2    00000002     rts430x_sc_sd_eabi.lib : int41.obj (.int41)
 
 PORT2      0    0000ffd4    00000002     
-                  0000ffd4    00000002     rts430x_sc_sd_eabi.lib : int42.obj (.int42)
+                  0000ffd4    00000002     main.obj (.int42)
 
 TIMER2_A1 
 *          0    0000ffd6    00000002     
@@ -130,7 +130,7 @@ USCI_A1    0    0000ffdc    00000002
                   0000ffdc    00000002     rts430x_sc_sd_eabi.lib : int46.obj (.int46)
 
 PORT1      0    0000ffde    00000002     
-                  0000ffde    00000002     rts430x_sc_sd_eabi.lib : int47.obj (.int47)
+                  0000ffde    00000002     main.obj (.int47)
 
 TIMER1_A1 
 *          0    0000ffe0    00000002     
@@ -191,19 +191,17 @@ MODULE SUMMARY
        Module         code   ro data   rw data
        ------         ----   -------   -------
     ./
-       main.obj       92     4         0      
+       main.obj       172    8         0      
     +--+--------------+------+---------+---------+
-       Total:         92     4         0      
+       Total:         172    8         0      
                                               
     /home/lincoln/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.1.LTS/lib/rts430x_sc_sd_eabi.lib
        isr_trap.obj   8      0         0      
        int41.obj      0      2         0      
-       int42.obj      0      2         0      
        int43.obj      0      2         0      
        int44.obj      0      2         0      
        int45.obj      0      2         0      
        int46.obj      0      2         0      
-       int47.obj      0      2         0      
        int48.obj      0      2         0      
        int49.obj      0      2         0      
        int50.obj      0      2         0      
@@ -219,10 +217,10 @@ MODULE SUMMARY
        int61.obj      0      2         0      
        int62.obj      0      2         0      
     +--+--------------+------+---------+---------+
-       Total:         8      42        0      
+       Total:         8      38        0      
                                               
     +--+--------------+------+---------+---------+
-       Grand Total:   100    46        0      
+       Grand Total:   180    46        0      
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -980,7 +978,7 @@ address   name
 0000015c  WDTCTL_L            
 00004400  __STACK_END         
 00000000  __STACK_SIZE        
-0000445c  __TI_ISR_TRAP       
+000044ac  __TI_ISR_TRAP       
 0000ffd2  __TI_int41          
 0000ffd4  __TI_int42          
 0000ffd6  __TI_int43          
@@ -1764,7 +1762,7 @@ address   name
 000023ff  USBIEPSIZXY_7       
 00004400  RESET               
 00004400  __STACK_END         
-0000445c  __TI_ISR_TRAP       
+000044ac  __TI_ISR_TRAP       
 0000ffd2  __TI_int41          
 0000ffd4  __TI_int42          
 0000ffd6  __TI_int43          

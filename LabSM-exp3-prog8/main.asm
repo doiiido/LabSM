@@ -32,7 +32,7 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 
 		    bis.w	#TACLR, &TA0CTL			; Limpa o timer TA.
 
-		    bis.w	#TASSEL_1, &TA0CTL		; Usando ACLK (32768 Hz).Gera 2 segundos por periodo.
+		    bis.w	#TASSEL_1, &TA0CTL		; Usando ACLK (32768 Hz).
 		    bic.w	#ID_0, &TA0CTL			; Divide por 1.
 		    bis.b	#TAIDEX_0, &TA0EX0		; Divide por 1 (extendido).
 
@@ -48,11 +48,9 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 		    nop
 
 TAinterruptRoutine:
-            bic		#TAIFG, &TA0CTL			; Reseta o sinal de interrup�ao.
-
-           xor.b	#BIT0, &P1OUT			; Alterna o LED P1.0
-
-           reti								;volta pra interrup�ao
+            bic.w	#TAIFG, &TA0CTL			; Reseta o sinal de interrup�ao.
+            xor.b	#BIT0, &P1OUT			; Alterna o LED P1.0
+            reti							;volta pra interrup�ao
 
 ;-------------------------------------------------------------------------------
 ;Configura�ao Interrup�ao:
