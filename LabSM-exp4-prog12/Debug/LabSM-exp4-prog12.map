@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker Unix v16.9.1                   
 ******************************************************************************
->> Linked Mon May 22 11:48:16 2017
+>> Linked Sun May 28 15:27:19 2017
 
 OUTPUT FILE NAME:   <LabSM-exp4-prog12.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_noexit"  address: 00004400
@@ -85,7 +85,7 @@ MEMORY CONFIGURATION
   INT61                 0000fffa   00000002  00000002  00000000  RWIX
   INT62                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   00014400  00000036  000143ca  RWIX
+  FLASH2                00010000   00014400  0000003c  000143c4  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -186,19 +186,19 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.obj (.reset)
 
-.text      0    00010000    00000036     
-                  00010000    0000002c     main.obj (.text:main)
-                  0001002c    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
-                  00010032    00000004                            : pre_init.obj (.text:_system_pre_init)
+.text      0    00010000    0000003c     
+                  00010000    00000032     main.obj (.text:main)
+                  00010032    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
+                  00010038    00000004                            : pre_init.obj (.text:_system_pre_init)
 
 MODULE SUMMARY
 
        Module             code   ro data   rw data
        ------             ----   -------   -------
     ./
-       main.obj           44     0         0      
+       main.obj           50     0         0      
     +--+------------------+------+---------+---------+
-       Total:             44     0         0      
+       Total:             50     0         0      
                                                   
     /home/lincoln/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.1.LTS/lib/rts430x_lc_rd_eabi.lib
        boot_special.obj   18     0         0      
@@ -233,7 +233,7 @@ MODULE SUMMARY
                                                   
        Stack:             0      0         160    
     +--+------------------+------+---------+---------+
-       Grand Total:       80     46        160    
+       Grand Total:       86     46        160    
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -322,7 +322,7 @@ address   name
 00000732  ADC12MEM9                    
 00000733  ADC12MEM9_H                  
 00000732  ADC12MEM9_L                  
-0001002c  C$$EXIT                      
+00010032  C$$EXIT                      
 000008c0  CBCTL0                       
 000008c1  CBCTL0_H                     
 000008c0  CBCTL0_L                     
@@ -1021,8 +1021,8 @@ ffffffff  __c_args__
 00004400  _c_int00_noinit_noargs_noexit
 0000fffe  _reset_vector                
 00004360  _stack                       
-00010032  _system_pre_init             
-0001002c  abort                        
+00010038  _system_pre_init             
+00010032  abort                        
 00010000  main                         
 
 
@@ -1807,9 +1807,9 @@ address   name
 0000fffc  __TI_int62                   
 0000fffe  _reset_vector                
 00010000  main                         
-0001002c  C$$EXIT                      
-0001002c  abort                        
-00010032  _system_pre_init             
+00010032  C$$EXIT                      
+00010032  abort                        
+00010038  _system_pre_init             
 ffffffff  __TI_pprof_out_hndl          
 ffffffff  __TI_prof_data_size          
 ffffffff  __TI_prof_data_start         

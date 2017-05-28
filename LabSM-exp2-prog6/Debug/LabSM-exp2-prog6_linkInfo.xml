@@ -2,7 +2,7 @@
 <link_info>
    <banner>MSP430 Linker Unix v16.9.1.LTS</banner>
    <copyright>Copyright (c) 2003-2015 Texas Instruments Incorporated</copyright>
-   <link_time>0x591e00c1</link_time>
+   <link_time>0x592b1683</link_time>
    <link_errors>0x0</link_errors>
    <output_file>LabSM-exp2-prog6.out</output_file>
    <entry_point>
@@ -391,21 +391,21 @@
          <name>.debug_info</name>
          <load_address>0x0</load_address>
          <run_address>0x0</run_address>
-         <size>0x137</size>
+         <size>0x106</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
       <object_component id="oc-379">
          <name>.debug_info</name>
-         <load_address>0x137</load_address>
-         <run_address>0x137</run_address>
+         <load_address>0x106</load_address>
+         <run_address>0x106</run_address>
          <size>0xf0</size>
          <input_file_ref idref="fl-39"/>
       </object_component>
       <object_component id="oc-3e1">
          <name>.debug_info</name>
-         <load_address>0x227</load_address>
-         <run_address>0x227</run_address>
-         <size>0xcc</size>
+         <load_address>0x1f6</load_address>
+         <run_address>0x1f6</run_address>
+         <size>0x9b</size>
       </object_component>
       <object_component id="oc-71">
          <name>.debug_line</name>
@@ -1127,7 +1127,7 @@
          <name>.debug_info</name>
          <load_address>0x0</load_address>
          <run_address>0x0</run_address>
-         <size>0x2f3</size>
+         <size>0x291</size>
          <contents>
             <object_component_ref idref="oc-6e"/>
             <object_component_ref idref="oc-379"/>

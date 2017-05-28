@@ -27,6 +27,7 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 ;Alunos: Lincoln Abreu Barbosa 140045023
 ;		 Bruno Freitas Feitosa Nunes 120112388
 
+
 			bis.b	#BIT0, &P1DIR	        ; Marca o LED em P1.0 como saida.
 		    bic.b	#BIT0, &P1OUT			; Marca o LED como desligado para comessar certo.
 
@@ -50,19 +51,21 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 
 			nop
 		    bis.w	#LPM4|GIE, SR			;Ativa a interrupcao e vai pra baixo consumo LPM4
-		   	nop;
+		   	nop
 
-PORT1_ISR:
+S2_ISR:
+			xor.b	#BIT1, &P1IES
 			xor.b	#BIT7, &P4OUT			; Alterna o LED P4.7
 			jmp 	Debouncing_Timer
-			reti							; Volta pra interrupcao
 
-PORT2_ISR:
+S1_ISR:
+			xor.b	#BIT1, &P2IES
 			xor.b   #BIT0, &P1OUT			; Alterna o LED P1.0
 			jmp 	Debouncing_Timer
-			reti							; Volta pra interrupcao
+
 
 Debouncing_Timer:
+
 	    	bis.w	#TACLR, &TA0CTL			; Limpa o timer TA.
 
 		    bis.w	#TASSEL_1, &TA0CTL		; Usando ACLK (32768 Hz).
@@ -72,26 +75,27 @@ Debouncing_Timer:
 		    bis.w	#TAIE, &TA0CTL			; Ativa a interrupcao do timer TA0.
 			bic.b	#BIT1, &P2IE			; Desativa a interrupcao do S1.
 			bic.b	#BIT1, &P1IE			; Desativa a interrupcao do S2.
+			bic.b	#BIT1, &P2IFG			; Reseta o sinal de interrupcao.
+			bic.b	#BIT1, &P1IFG			; Reseta o sinal de interrupcao.
 
-			bis.w	#327, &TA0CCR0			; Marca o TA0CCR0 como 327, resultando em uma chamada de 100Hz
+			bis.w	#3276, &TA0CCR0			; Marca o TA0CCR0 como 3276, resultando em uma chamada de 10Hz (100ms)
 											; da rotina
 		    bis.w	#MC_1, &TA0CTL			; Marca o modo de timer para contar ate TA0CCR0.
+		    reti
 
 DebouncingISR:
-            bic.w	#TAIFG, &TA0CTL			; Reseta o sinal de interrup�ao.
+			bic.w	#TAIFG, &TA0CTL			; Reseta o sinal de interrup�ao.
 		    bic.w	#TAIE, &TA0CTL			; Desativa a interrupcao do timer TA0.
 			bis.b	#BIT1, &P2IE			; Ativa a interrupcao do S1.
 			bis.b	#BIT1, &P1IE			; Ativa a interrupcao do S2.
-			bic.b	#BIT1, &P1IFG			; Reseta o sinal de interrupcao.
-			bic.b	#BIT1, &P2IFG			; Reseta o sinal de interrupcao.
-            reti							;volta pra interrup�ao
+			reti							;volta pra interrup�ao
 
 
 ;Interrupt Config:
            .sect	".int47"   ; added this line
-           .short   PORT1_ISR  ; added this line
+           .short   S2_ISR  ; added this line
            .sect    ".int42"   ; added this line
-           .short  	PORT2_ISR  ; added this line
+           .short  	S1_ISR  ; added this line
            .sect   	".int52"
            .short	DebouncingISR
 ;-------------------------------------------------------------------------------
