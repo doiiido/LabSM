@@ -1,7 +1,7 @@
 ******************************************************************************
-                  MSP430 Linker Unix v16.9.1                   
+                  MSP430 Linker PC v16.9.1                     
 ******************************************************************************
->> Linked Sun May 28 12:33:21 2017
+>> Linked Sat Jun 10 16:04:02 2017
 
 OUTPUT FILE NAME:   <LabSM-exp4-prog13.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_noexit"  address: 0000448a
@@ -212,12 +212,12 @@ MODULE SUMMARY
 
        Module                     code   ro data   rw data
        ------                     ----   -------   -------
-    ./
+    .\
        main.obj                   340    4         4      
     +--+--------------------------+------+---------+---------+
        Total:                     340    4         4      
                                                           
-    /home/lincoln/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.1.LTS/lib/rts430x_lc_rd_eabi.lib
+    C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.1.LTS\lib\rts430x_lc_rd_eabi.lib
        autoinit_wdt.obj           130    0         0      
        copy_decompress_lzss.obj   120    0         0      
        cpy_tbl.obj                102    0         0      

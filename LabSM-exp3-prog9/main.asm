@@ -36,51 +36,51 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 
 			bic.b	#BIT1, &P1DIR	        ; Marca o pino P1.1 como entrada para S2.
 			bis.b	#BIT1, &P1REN	        ; Marca a entrada do pino P1.1 com resistor.
-			bis.b	#BIT1, &P1OUT	        ; Marca o resistor da entrada P1.1 como pulldown.
+			bis.b	#BIT1, &P1OUT	        ; Marca o resistor da entrada P1.1 como pullup.
 
 			bic.b	#BIT1, &P2DIR	        ; Marca o pino P2.1 como entrada para S1.
 			bis.b	#BIT1, &P2REN	        ; Marca a entrada do pino P2.1 com resistor.
-			bis.b	#BIT1, &P2OUT	        ; Marca o resistor da entrada P2.1 como pulldown.
+			bis.b	#BIT1, &P2OUT	        ; Marca o resistor da entrada P2.1 como pullup.
 
 			bis.b	#BIT1, &P2IE			; Ativa a interrupcao do S1.
-		    bis.b	#BIT1, &P2IES
-			bic.b	#BIT1, &P2IFG
+		    bis.b	#BIT1, &P2IES			; Modo de interrupcao para edge up-down
+			bic.b	#BIT1, &P2IFG			; Limpa flag de interrupcao
 		    bis.b	#BIT1, &P1IE			; Ativa a interrupcao do S2.
-		    bis.b	#BIT1, &P1IES
-		    bic.b	#BIT1, &P1IFG
+		    bis.b	#BIT1, &P1IES			; Modo de interrupcao para edge up-down
+		    bic.b	#BIT1, &P1IFG			; Limpa flag de interrupcao
 
 			nop
 		    bis.w	#LPM4|GIE, SR			;Ativa a interrupcao e vai pra baixo consumo LPM4
 		   	nop
 
 S2_ISR:
-			xor.b	#BIT1, &P1IES
+			xor.b	#BIT1, &P1IES			; Alterna o modo de interrupcao entre edge up-down e down-up
 			xor.b	#BIT7, &P4OUT			; Alterna o LED P4.7
 			call 	#Debouncing_Timer
-			reti
+			reti                            ; Volta pra interrupcao
 
 S1_ISR:
-			xor.b	#BIT1, &P2IES
+			xor.b	#BIT1, &P2IES			; Alterna o modo de interrupcao entre edge up-down e down-up
 			xor.b   #BIT0, &P1OUT			; Alterna o LED P1.0
 			call 	#Debouncing_Timer
-			reti
+			reti                            ; Volta pra interrupcao
 
 Debouncing_Timer:
-            mov.w	#0, R7         ; Limpa o timer
-Timer:		cmp.w	#500, R7
+            mov.w	#0, R7        			; Limpa o timer
+Timer:		cmp.w	#500, R7				; Timer por loop 500 vezes
 			jlo		loop
-            bic.b   #BIT1, &P1IFG
-            bic.b   #BIT1, &P2IFG
+            bic.b   #BIT1, &P1IFG			; Limpa flags geradas durante o debouncing
+            bic.b   #BIT1, &P2IFG			; Limpa flags geradas durante o debouncing
 			ret
 loop:		inc 	R7
 			jmp		Timer
 			nop
 
 ;Interrupt Config:
-           .sect	".int47"   ; added this line
-           .short   S2_ISR  ; added this line
-           .sect    ".int42"   ; added this line
-           .short  	S1_ISR  ; added this line
+           .sect    ".int47"   				; Interrupt do pino 1.1
+           .short   S2_ISR    				; Rotina de interrupcao do 1.1
+           .sect    ".int42"   				; Interrupt do pino 2.1
+           .short   S1_ISR    				; Rotina de interrupcao do 2.1
 ;-------------------------------------------------------------------------------
 ; Stack Pointer definition
 ;-------------------------------------------------------------------------------
