@@ -1,9 +1,9 @@
 #include <msp430.h> 
 
 /*
- * main.c
- */
-#define DELAY = 0xFFFFFFFF
+*   Alunos: Lincoln Abreu Barbosa 140045023
+*           Bruno Freitas Feitosa Nunes 120112388
+*/
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;   // Stop watchdog timer
@@ -18,7 +18,7 @@ int main(void) {
                                 // da rotina
     TA0CTL |= MC_1;             // Marca o modo de timer para contar ate TA0CCR0.
 
-    __bis_SR_register(LPM3_bits+GIE);           //Ativa a interrup�ao e vai pra baixo consumo LPM3
+    __bis_SR_register(LPM3_bits+GIE);           //Ativa a interrupcao e vai pra baixo consumo LPM3
 
 }
 // Timer1 A0 interrupt service routine
