@@ -33,7 +33,7 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 		    bis.w	#TACLR, &TA0CTL			; Limpa o timer TA.
 
 		    bis.w	#TASSEL_1, &TA0CTL		; Usando ACLK (32768 Hz).
-		    bic.w	#ID_0, &TA0CTL			; Divide por 1.
+		    bis.w	#ID_0, &TA0CTL			; Divide por 1.
 		    bis.b	#TAIDEX_0, &TA0EX0		; Divide por 1 (extendido).
 
 		    bis.w	#TAIE, &TA0CTL			; Ativa a interrup�ao do timer TA0.

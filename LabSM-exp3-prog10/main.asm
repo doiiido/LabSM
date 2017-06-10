@@ -52,49 +52,36 @@ S2_ISR:
             xor.b   #BIT1, &P1IES
             cmp.b   #1, R5
             jeq     Fim_ISRS2
-            inc R5
+            inc 	R5
             xor.b   #BIT7, &P4OUT           ; Alterna o LED P4.7
             cmp		#1, R6
             jeq		MSB
-            inc R6
-            jmp     Debouncing_Timer
+            inc 	R6
+            call    #Debouncing_Timer
             reti                            ; Volta pra interrupcao
 
 Fim_ISRS2:  mov #0, R5
-            jmp     Debouncing_Timer
+            call    #Debouncing_Timer
+            reti
 
 MSB:	  	mov #0, R6
 			xor.b   #BIT0, &P1OUT           ; Alterna o LED P1.0
-            jmp     Debouncing_Timer
-
-Debouncing_Timer:
-            bis.w   #TACLR, &TA0CTL         ; Limpa o timer TA.
-
-            bis.w   #TASSEL_1, &TA0CTL      ; Usando ACLK (32768 Hz).
-            bic.w   #ID_0, &TA0CTL          ; Divide por 1.
-            bis.b   #TAIDEX_0, &TA0EX0      ; Divide por 1 (extendido).
-
-            bis.w   #TAIE, &TA0CTL          ; Ativa a interrupcao do timer TA0.
-            bic.b   #BIT1, &P1IE            ; Desativa a interrupcao do S2.
-
-            bis.w   #3276, &TA0CCR0         ; Marca o TA0CCR0 como 3276, resultando em uma chamada de 10Hz (100ms)
-                                            ; da rotina
-            bis.w   #MC_1, &TA0CTL          ; Marca o modo de timer para contar ate TA0CCR0.
+            call    #Debouncing_Timer
             reti
 
-DebouncingISR:
-            bic.w   #TAIFG, &TA0CTL         ; Reseta o sinal de interrup�ao.
-            bic.w   #TAIE, &TA0CTL          ; Desativa a interrupcao do timer TA0.
-            bis.b   #BIT1, &P1IE            ; Ativa a interrupcao do S2.
-            bic.b   #BIT1, &P1IFG           ; Reseta o sinal de interrupcao.
-            reti                            ;volta pra interrup�ao
-
+Debouncing_Timer:
+            mov.w	#0, R7         ; Limpa o timer TA.
+Timer:		cmp.w	#500, R7
+			jlo		loop
+            bic.b   #BIT1, &P1IFG
+			ret
+loop:		inc 	R7
+			jmp		Timer
+			nop
 
 ;Interrupt Config:
            .sect    ".int47"   ; added this line
            .short   S2_ISR  ; added this line
-           .sect    ".int52"
-           .short   DebouncingISR
 ;-------------------------------------------------------------------------------
 ; Stack Pointer definition
 ;-------------------------------------------------------------------------------

@@ -64,13 +64,13 @@ S2_ISR:
             cmp	#1, R6
             jeq	pisca2
             xor.b   #BIT7, &P4OUT           ; Alterna o LED P4.7
-            jmp     Debouncing_Timer
+            call     #Debouncing_Timer
             reti                            ; Volta pra interrupcao
 
 Fim_ISRS2:  mov #0, R5
             cmp	#1, R9
             jeq	pisca2
-            jmp     Debouncing_Timer
+            call     #Debouncing_Timer
             reti
 
 S1_ISR:
@@ -81,13 +81,14 @@ S1_ISR:
             cmp	#1, R5
             jeq	pisca2
             xor.b   #BIT0, &P1OUT           ; Alterna o LED P1.0
-            jmp     Debouncing_Timer
+            call     #Debouncing_Timer
+			reti
 
 Fim_ISRS1:  mov #0, R6
             cmp	#1, R9
             jeq	pisca2
-            jmp     Debouncing_Timer
-
+            call     #Debouncing_Timer
+			reti
 pisca2:
 			cmp.b 	#0, R9
 			jeq		Timer
@@ -107,31 +108,21 @@ pisca2:
             reti
 
 no_operation:	nop
+            	call     #Debouncing_Timer
+				bic.b   #BIT1, &P2IFG           ; Reseta o sinal de interrupcao.
+            	bic.b   #BIT1, &P1IFG           ; Reseta o sinal de interrupcao.
+				reti
 
 Debouncing_Timer:
-            bis.w   #TACLR, &TA0CTL         ; Limpa o timer TA.
-
-            bis.w   #TASSEL_1, &TA0CTL      ; Usando ACLK (32768 Hz).
-            bic.w   #ID_0, &TA0CTL          ; Divide por 1.
-            bis.b   #TAIDEX_0, &TA0EX0      ; Divide por 1 (extendido).
-
-            bis.w   #TAIE, &TA0CTL          ; Ativa a interrupcao do timer TA0.
-            bic.b   #BIT1, &P2IE            ; Desativa a interrupcao do S1.
-            bic.b   #BIT1, &P1IE            ; Desativa a interrupcao do S2.
-
-            bis.w   #3276, &TA0CCR0         ; Marca o TA0CCR0 como 3276, resultando em uma chamada de 10Hz (100ms)
-                                            ; da rotina
-            bis.w   #MC_1, &TA0CTL          ; Marca o modo de timer para contar ate TA0CCR0.
-            reti
-
-DebouncingISR:
-            bic.w   #TAIFG, &TA0CTL         ; Reseta o sinal de interrup�ao.
-            bic.w   #TAIE, &TA0CTL          ; Desativa a interrupcao do timer TA0.
-            bis.b   #BIT1, &P2IE            ; Ativa a interrupcao do S1.
-            bis.b   #BIT1, &P1IE            ; Ativa a interrupcao do S2.
-            bic.b   #BIT1, &P2IFG           ; Reseta o sinal de interrupcao.
-            bic.b   #BIT1, &P1IFG           ; Reseta o sinal de interrupcao.
-            reti                            ;volta pra interrup�ao
+            mov.w	#0, R10         ; Limpa o timer TA.
+DTimer:		cmp.w	#500, R10
+			jlo		loop
+            bic.b   #BIT1, &P1IFG
+            bic.b   #BIT1, &P2IFG
+			ret
+loop:		inc 	R10
+			jmp		DTimer
+			nop
 
 Timer:
 			mov.b	P1OUT, R7
@@ -170,8 +161,6 @@ TimerISR:
            .short   S2_ISR  ; added this line
            .sect    ".int42"   ; added this line
            .short   S1_ISR  ; added this line
-           .sect    ".int52"
-           .short   DebouncingISR
            .sect    ".int48"
            .short   TimerISR
 ;-------------------------------------------------------------------------------
