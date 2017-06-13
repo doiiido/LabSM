@@ -72,4 +72,5 @@ void core_initialize(void){
               DIVM__1;                      // MCLK  DCOCLK/1 = 1,332565MHz
 
     UCSCTL6 &= ~SMCLKOFF;                   // Garante que o SMCLK esta ligado
+    UCSCTL6 &= ~XT1OFF;                      // Garante que o XT1 esta ligado
 }
