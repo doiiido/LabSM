@@ -27,18 +27,18 @@ int main(void) {
     __no_operation();
 }
 // Timer1 A0 interrupt service routine
-#pragma vector=TIMER0_A0_VECTOR
+#pragma vector=TIMER0_B0_VECTOR
 __interrupt void TIMER0_CCR0_ISR(void)
 {
     switch(led_on){
         case 1:                 // Se o led esta ligado
-        TA0CCR0 = ccr0-pwm_ctl;     // Tempo apagado
+        TB0CCR0 = ccr0-pwm_ctl;     // Tempo apagado
         led_on = 0;             // Marca como apagado
         break;
         case 0:                 // Se o led esta desligado
-        if(pwm == 0)            // Correção de erro de condição (TACCR0 >= 1)
+        if(pwm == 0)            // Correção de erro de condição (TBCCR0 >= 1)
             pwm_ctl=1;          // Valor Minimo do CCR0
-        TA0CCR0 = pwm_ctl;      // Tempo apagado
+        TB0CCR0 = pwm_ctl;      // Tempo apagado
         led_on = 1;             // Marca o led como ligado
         break;
     }
@@ -105,13 +105,13 @@ __interrupt void Port_2(void){
 void timer_setup(){
     ccr0 = 327;                 // Marca o ccr0 como 327, resultando em uma chamada de 100Hz
                                 // da rotina (pwm de 10ms+10ms)
-    TA0CTL |= TACLR;            // Limpa o timer TA.
-    TA0CTL |= TASSEL_1;         // Usando ACLK (32,768kHz).
-    TA0CTL |= ID_0;             // Divide por 1.
-    TA0EX0 |= TAIDEX_0;         // Divide por 1 (extendido).
-    TA0CCTL0 = CCIE;            // Ativa a interrupcao CCR0 do timer A0
-    TA0CCR0 = ccr0;             // Marca o TA0CCR0 como ccr0
-    TA0CTL |= MC_1;             // Marca o modo de timer para contar ate TA0CCR0.
+    TB0CTL |= TBCLR;            // Limpa o timer TB.
+    TB0CTL |= TBSSEL_1;         // Usando ACLK (32,768kHz).
+    TB0CTL |= ID_0;             // Divide por 1.
+    TB0EX0 |= TBIDEX_0;         // Divide por 1 (extendido).
+    TB0CCTL0 = CCIE;            // Ativa a interrupcao CCR0 do timer A0
+    TB0CCR0 = ccr0;             // Marca o TB0CCR0 como ccr0
+    TB0CTL |= MC_1;             // Marca o modo de timer para contar ate TB0CCR0.
 }
 
 void s1_s2_setup(){
