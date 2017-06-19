@@ -26,7 +26,7 @@ int main(void) {
     __bis_SR_register(LPM0_bits+GIE);  //Ativa a interrupcao e vai pra baixo consumo LPM3
     __no_operation();
 }
-// Timer1 A0 interrupt service routine
+// Timer1 B0 interrupt service routine
 #pragma vector=TIMER0_B0_VECTOR
 __interrupt void TIMER0_CCR0_ISR(void)
 {
@@ -36,8 +36,8 @@ __interrupt void TIMER0_CCR0_ISR(void)
         led_on = 0;             // Marca como apagado
         break;
         case 0:                 // Se o led esta desligado
-        if(pwm == 0)            // Correção de erro de condição (TBCCR0 >= 1)
-            pwm_ctl=1;          // Valor Minimo do CCR0
+        if(pwm == 0)            // Correção de erro de condição (TBCCR0 >= 4)
+            pwm_ctl=4;          // Valor Minimo do CCR0
         TB0CCR0 = pwm_ctl;      // Tempo apagado
         led_on = 1;             // Marca o led como ligado
         break;
@@ -109,7 +109,7 @@ void timer_setup(){
     TB0CTL |= TBSSEL_1;         // Usando ACLK (32,768kHz).
     TB0CTL |= ID_0;             // Divide por 1.
     TB0EX0 |= TBIDEX_0;         // Divide por 1 (extendido).
-    TB0CCTL0 = CCIE;            // Ativa a interrupcao CCR0 do timer A0
+    TB0CCTL0 = CCIE;            // Ativa a interrupcao CCR0 do timer B0
     TB0CCR0 = ccr0;             // Marca o TB0CCR0 como ccr0
     TB0CTL |= MC_1;             // Marca o modo de timer para contar ate TB0CCR0.
 }
