@@ -125,7 +125,7 @@ void lcd_clr(void){ // apaga display e posiciona o cursor na 1a linha e 1a colun
 
 void lcd_home(void){ // posiciona o cursor na 1a linha e 1a coluna
   lcd_cmd(0x02);
-  __delay_cycles(2000);
+  time_delay(20);
 }
 
 void lcd_str(char *pt){
@@ -153,8 +153,9 @@ int main(void) {
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void TIMER0_CCR0_ISR(void)
 {
-    TA0CTL |= MC_0;
-    TA0CTL |= TACLR;            // Limpa o timer TA.
+    TA0CTL = MC_0;
+    TA0CTL = TACLR;            // Limpa o timer TA.
+    TA0CCTL0 &= ~CCIE;            // Ativa a interrupcao CCR0 do timer A0
     __bic_SR_register_on_exit(LPM0_bits+GIE);
     //Desativa a interrupcao ao sair
 }
@@ -164,7 +165,7 @@ void timerA_setup(){
     TA0CTL |= TASSEL_1;         // Usando ACLK (32,768kHz).
     TA0CTL |= ID_0;             // Divide por 1.
     TA0EX0 |= TAIDEX_2;         // Divide por 3 (extendido) (11khz).
-    TA0CCTL0 = CCIE;            // Ativa a interrupcao CCR0 do timer B0
+    TA0CCTL0 |= CCIE;            // Ativa a interrupcao CCR0 do timer A0
 }
 
 void time_delay (int mult){
