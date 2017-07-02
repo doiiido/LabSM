@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v16.9.1                     
 ******************************************************************************
->> Linked Mon Jun 26 15:43:40 2017
+>> Linked Sun Jul 02 05:14:33 2017
 
 OUTPUT FILE NAME:   <LabSM-exp5-prog15.out>
-ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_noexit"  address: 00004400
+ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_noexit"  address: 00004416
 
 
 MEMORY CONFIGURATION
@@ -20,7 +20,7 @@ MEMORY CONFIGURATION
   INFOA                 00001980   00000080  00000000  00000080  RWIX
   USBRAM                00001c00   00000800  00000000  00000800  RWIX
   RAM                   00002400   00002000  000000a0  00001f60  RWIX
-  FLASH                 00004400   0000bb80  0000001a  0000bb66  RWIX
+  FLASH                 00004400   0000bb80  00000030  0000bb50  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -85,7 +85,7 @@ MEMORY CONFIGURATION
   INT61                 0000fffa   00000002  00000002  00000000  RWIX
   INT62                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   00014400  00000214  000141ec  RWIX
+  FLASH2                00010000   00014400  000001e8  00014218  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -98,9 +98,10 @@ section   page    origin      length       input sections
                   00004364    0000009c     --HOLE--
 
 .text:_isr 
-*          0    00004400    0000001a     
-                  00004400    00000012     rts430x_lc_rd_eabi.lib : boot_special.obj (.text:_isr:_c_int00_noinit_noargs_noexit)
-                  00004412    00000008                            : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
+*          0    00004400    00000030     
+                  00004400    00000016     main.obj (.text:_isr:TIMER0_CCR0_ISR)
+                  00004416    00000012     rts430x_lc_rd_eabi.lib : boot_special.obj (.text:_isr:_c_int00_noinit_noargs_noexit)
+                  00004428    00000008                            : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
 
 .cinit     0    00004400    00000000     UNINITIALIZED
 
@@ -152,7 +153,7 @@ TIMER0_A1
 
 TIMER0_A0 
 *          0    0000ffea    00000002     
-                  0000ffea    00000002     rts430x_lc_rd_eabi.lib : int53.obj (.int53)
+                  0000ffea    00000002     main.obj (.int53)
 
 ADC12      0    0000ffec    00000002     
                   0000ffec    00000002     rts430x_lc_rd_eabi.lib : int54.obj (.int54)
@@ -186,27 +187,32 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.obj (.reset)
 
-.text      0    00010000    00000214     
-                  00010000    000000c0     main.obj (.text:main)
-                  000100c0    00000076     main.obj (.text:lcd_inic)
-                  00010136    0000003a     main.obj (.text:lcd_pins)
-                  00010170    0000002e     main.obj (.text:lcd_cursor)
-                  0001019e    00000020     main.obj (.text:lcd_nib)
-                  000101be    0000001e     main.obj (.text:lcd_char)
-                  000101dc    0000001e     main.obj (.text:lcd_cmd)
-                  000101fa    00000008     main.obj (.text:lcd_clr)
-                  00010202    00000008     main.obj (.text:lcd_home)
-                  0001020a    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
-                  00010210    00000004                            : pre_init.obj (.text:_system_pre_init)
+.text      0    00010000    000001e8     
+                  00010000    00000078     main.obj (.text:lcd_init)
+                  00010078    00000064     main.obj (.text:main)
+                  000100dc    0000002e     main.obj (.text:lcd_cursor)
+                  0001010a    00000026     main.obj (.text:lcd_pins)
+                  00010130    00000020     main.obj (.text:time_delay)
+                  00010150    0000001c     main.obj (.text:timerA_setup)
+                  0001016c    00000018     main.obj (.text:lcd_Byte)
+                  00010184    00000016     main.obj (.text:pulsa_e)
+                  0001019a    00000010     main.obj (.text:lcd_clr)
+                  000101aa    00000010     main.obj (.text:lcd_nib)
+                  000101ba    0000000a     main.obj (.text:lcd_char)
+                  000101c4    0000000a     main.obj (.text:lcd_cmd)
+                  000101ce    00000008     main.obj (.text:Data_mode)
+                  000101d6    00000008     main.obj (.text:Instruction_mode)
+                  000101de    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
+                  000101e4    00000004                            : pre_init.obj (.text:_system_pre_init)
 
 MODULE SUMMARY
 
        Module             code   ro data   rw data
        ------             ----   -------   -------
     .\
-       main.obj           522    0         0      
+       main.obj           500    2         0      
     +--+------------------+------+---------+---------+
-       Total:             522    0         0      
+       Total:             500    2         0      
                                                   
     C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.1.LTS\lib\rts430x_lc_rd_eabi.lib
        boot_special.obj   18     0         0      
@@ -226,7 +232,6 @@ MODULE SUMMARY
        int50.obj          0      2         0      
        int51.obj          0      2         0      
        int52.obj          0      2         0      
-       int53.obj          0      2         0      
        int54.obj          0      2         0      
        int55.obj          0      2         0      
        int56.obj          0      2         0      
@@ -237,11 +242,11 @@ MODULE SUMMARY
        int61.obj          0      2         0      
        int62.obj          0      2         0      
     +--+------------------+------+---------+---------+
-       Total:             36     46        0      
+       Total:             36     44        0      
                                                   
        Stack:             0      0         160    
     +--+------------------+------+---------+---------+
-       Grand Total:       558    46        160    
+       Grand Total:       536    46        160    
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -330,7 +335,7 @@ address   name
 00000732  ADC12MEM9                    
 00000733  ADC12MEM9_H                  
 00000732  ADC12MEM9_L                  
-0001020a  C$$EXIT                      
+000101de  C$$EXIT                      
 000008c0  CBCTL0                       
 000008c1  CBCTL0_H                     
 000008c0  CBCTL0_L                     
@@ -407,6 +412,7 @@ address   name
 0000050e  DMAIV                        
 0000050f  DMAIV_H                      
 0000050e  DMAIV_L                      
+000101ce  Data_mode                    
 00000140  FCTL1                        
 00000141  FCTL1_H                      
 00000140  FCTL1_L                      
@@ -416,6 +422,7 @@ address   name
 00000146  FCTL4                        
 00000147  FCTL4_H                      
 00000146  FCTL4_L                      
+000101d6  Instruction_mode             
 000004c4  MAC                          
 000004da  MAC32H                       
 000004db  MAC32H_H                     
@@ -759,6 +766,7 @@ address   name
 000003e0  TB0EX0                       
 000003ee  TB0IV                        
 000003d0  TB0R                         
+00004400  TIMER0_CCR0_ISR              
 000005d0  UCA0ABCTL                    
 000005c6  UCA0BRW                      
 000005c7  UCA0BRW_H                    
@@ -999,7 +1007,7 @@ address   name
 0000015c  WDTCTL_L                     
 00004400  __STACK_END                  
 000000a0  __STACK_SIZE                 
-00004412  __TI_ISR_TRAP                
+00004428  __TI_ISR_TRAP                
 0000ffd2  __TI_int41                   
 0000ffd4  __TI_int42                   
 0000ffd6  __TI_int43                   
@@ -1026,20 +1034,23 @@ ffffffff  __TI_pprof_out_hndl
 ffffffff  __TI_prof_data_size          
 ffffffff  __TI_prof_data_start         
 ffffffff  __c_args__                   
-00004400  _c_int00_noinit_noargs_noexit
+00004416  _c_int00_noinit_noargs_noexit
 0000fffe  _reset_vector                
 00004360  _stack                       
-00010210  _system_pre_init             
-0001020a  abort                        
-000101be  lcd_char                     
-000101fa  lcd_clr                      
-000101dc  lcd_cmd                      
-00010170  lcd_cursor                   
-00010202  lcd_home                     
-000100c0  lcd_inic                     
-0001019e  lcd_nib                      
-00010136  lcd_pins                     
-00010000  main                         
+000101e4  _system_pre_init             
+000101de  abort                        
+0001016c  lcd_Byte                     
+000101ba  lcd_char                     
+0001019a  lcd_clr                      
+000101c4  lcd_cmd                      
+000100dc  lcd_cursor                   
+00010000  lcd_init                     
+000101aa  lcd_nib                      
+0001010a  lcd_pins                     
+00010078  main                         
+00010184  pulsa_e                      
+00010130  time_delay                   
+00010150  timerA_setup                 
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -1796,9 +1807,10 @@ address   name
 000023fe  USBIEPBCTY_7                 
 000023ff  USBIEPSIZXY_7                
 00004360  _stack                       
+00004400  TIMER0_CCR0_ISR              
 00004400  __STACK_END                  
-00004400  _c_int00_noinit_noargs_noexit
-00004412  __TI_ISR_TRAP                
+00004416  _c_int00_noinit_noargs_noexit
+00004428  __TI_ISR_TRAP                
 0000ffd2  __TI_int41                   
 0000ffd4  __TI_int42                   
 0000ffd6  __TI_int43                   
@@ -1822,21 +1834,26 @@ address   name
 0000fffa  __TI_int61                   
 0000fffc  __TI_int62                   
 0000fffe  _reset_vector                
-00010000  main                         
-000100c0  lcd_inic                     
-00010136  lcd_pins                     
-00010170  lcd_cursor                   
-0001019e  lcd_nib                      
-000101be  lcd_char                     
-000101dc  lcd_cmd                      
-000101fa  lcd_clr                      
-00010202  lcd_home                     
-0001020a  C$$EXIT                      
-0001020a  abort                        
-00010210  _system_pre_init             
+00010000  lcd_init                     
+00010078  main                         
+000100dc  lcd_cursor                   
+0001010a  lcd_pins                     
+00010130  time_delay                   
+00010150  timerA_setup                 
+0001016c  lcd_Byte                     
+00010184  pulsa_e                      
+0001019a  lcd_clr                      
+000101aa  lcd_nib                      
+000101ba  lcd_char                     
+000101c4  lcd_cmd                      
+000101ce  Data_mode                    
+000101d6  Instruction_mode             
+000101de  C$$EXIT                      
+000101de  abort                        
+000101e4  _system_pre_init             
 ffffffff  __TI_pprof_out_hndl          
 ffffffff  __TI_prof_data_size          
 ffffffff  __TI_prof_data_start         
 ffffffff  __c_args__                   
 
-[792 symbols]
+[798 symbols]
