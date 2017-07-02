@@ -8,92 +8,92 @@
 #define D5  BIT1
 #define D6  BIT2
 #define D7  BIT3
+#define RS BIT6
+#define EN BIT5
 
 void pulsa_e(void);
+void Instruction_mode(void);
+void Data_mode(void);
 void lcd_pins(void);
 void lcd_nib(char nibble);
+void lcd_Byte(char byte);
 void lcd_cmd(char byte);
 void lcd_char(char byte);
-void lcd_inic(void);
+void lcd_init(void);
 void lcd_cursor(int c, int l);
 void lcd_clr(void);
 void lcd_home(void);
 void lcd_str(char *pt);
+void time_delay(int mult);
 
 void pulsa_e(void){
-  P3OUT |= BIT5;
-  __delay_cycles(5000);
-  P3OUT &= ~BIT5;
+  P3OUT |= EN;
+  time_delay(50);
+  P3OUT &= ~EN;
 }
 
-void lcd_pins(void){  //Configura como saÃ­da todos os pinos utilizados pelo LCD
-  P3OUT &= ~BIT5;
-  P3DIR |= BIT5;
+void Instruction_mode(void){
+    //RS = 0, RW = 0
+    P3OUT &= ~RS;
+}
 
-  P3OUT &= ~BIT6;
-  P3DIR |= BIT6;
+void Data_mode(void){
+    //RS = 1, RW = 0
+    P3OUT |= RS;
+}
+void lcd_pins(void){  //Configura como saída todos os pinos utilizados pelo LCD
+  P3DIR |= EN;
+  P3DIR |= RS;
 
-  P6OUT &= ~D4;
   P6DIR |= D4;
-
-  P6OUT &= ~D5;
   P6DIR |= D5;
-
-  P6OUT &= ~D6;
   P6DIR |= D6;
-
-  P6OUT &= ~D7;
   P6DIR |= D7;
+  time_delay(150);
 }
 
-void lcd_nib(char nibble){  //recebe um nibble 0000 xxxx, escreve no bus e pulsa E
+void lcd_nib(char nibble){  //recebe um nibble 0000 xxxx, escreve no bus e pulsa E//zera os dados
+  P6OUT &= ~(D4 | D5 | D6 |D7);    //zera os dados
   P6OUT = nibble;
   pulsa_e();
 }
 
 void lcd_cmd(char byte){  //RS = 0, recebe um byte, quebra em 2 nibbles e escreve com lcd_nib()
-  char nibble1;
-  char nibble2;
-  P3OUT &= ~BIT6;  // escrevendo uma instruÃ§Ã£o: RS=0
-  nibble1 = (byte & 0xF0);
-  nibble2 = (nibble1>>4)&(0xF0);
-  lcd_nib(nibble1);
-  nibble2 = (byte & 0x0F);
-  lcd_nib(nibble2);
-  __delay_cycles(2000);
+  Instruction_mode();  // escrevendo uma instrução: RS=0
+  lcd_Byte(byte);
 }
 
 void lcd_char(char byte){ //RS = 1, recebe um byte, quebra em 2 nibbles e escreve com lcd_nib()
-  char nibble1;
-  char nibble2;
-  P3OUT |= BIT6;  // escrevendo uma instruÃ§Ã£o: RS=1
-  nibble1 = (byte & 0xF0);
-  nibble2 = (nibble1>>4)&(0xF0);
-  lcd_nib(nibble1);
-  nibble2 = (byte & 0x0F);
-  lcd_nib(nibble2);
-  __delay_cycles(2000);
+  Data_mode();  // escrevendo dados: RS=1
+  lcd_Byte(byte);
 }
 
-void lcd_inic(void){
-  P3OUT &= ~BIT6;  // escrevendo uma instruÃ§Ã£o: RS=0
+void lcd_Byte(char byte){ //recebe um byte, quebra em 2 nibbles e escreve com lcd_nib()
+  char nibble1;
+  char nibble2;
+  nibble1 = (byte >> 4);
+  lcd_nib(nibble1);
+  nibble2 = (byte);
+  lcd_nib(nibble2);
+}
 
-  __delay_cycles(20000);
+void lcd_init(void){
+  Instruction_mode();  // escrevendo uma instrução: RS=0
   lcd_nib(0x3);
-
-  __delay_cycles(10000);
+  time_delay(150);
   lcd_nib(0x3);
-
-  __delay_cycles(2000);
+  time_delay(1);
   lcd_nib(0x3);
-
-  __delay_cycles(2000);
+  time_delay(1);
   lcd_nib(0x2);  //ativa modo 4 bits
-
+  time_delay(1);
   lcd_cmd(0x28); //define 4 bits, 2 linhas, display 5x8
-  lcd_cmd(0x8);  //display desativado, cursor desabilitado, cursor estÃ¡tico
+  time_delay(20);
+  lcd_cmd(0x8);  //display desativado, cursor desabilitado, cursor estático
+  time_delay(20);
   lcd_clr();     //limpa tudo
   lcd_cmd(0x6);  //modo entrada: cursor p/ direita, display parado
+  time_delay(20);
   lcd_cmd(0xF);  //display ativado, cursor habilitado, cursor piscante
 }
 
@@ -120,7 +120,7 @@ void lcd_cursor(int x, int y)
 
 void lcd_clr(void){ // apaga display e posiciona o cursor na 1a linha e 1a coluna
   lcd_cmd(0x1);
-  __delay_cycles(2000);
+  time_delay(20);
 }
 
 void lcd_home(void){ // posiciona o cursor na 1a linha e 1a coluna
@@ -128,13 +128,12 @@ void lcd_home(void){ // posiciona o cursor na 1a linha e 1a coluna
   __delay_cycles(2000);
 }
 
-  void lcd_str(char *pt){
+void lcd_str(char *pt){
   do{
   lcd_char(*pt);
   *pt++;
   }
   while (*pt != '\0');
-  __delay_cycles(100000);
 }
 
 
@@ -142,7 +141,7 @@ int main(void) {
     WDTCTL = WDTPW | WDTHOLD;   // Stop watchdog timer
 
     lcd_pins();
-    lcd_inic();
+    lcd_init();
     lcd_cursor(0,0);
     lcd_str("Bruno");
     lcd_cursor(0,1);
@@ -150,3 +149,30 @@ int main(void) {
 
     return(0);
 }
+
+#pragma vector=TIMER0_A0_VECTOR
+__interrupt void TIMER0_CCR0_ISR(void)
+{
+    TA0CTL |= MC_0;
+    TA0CTL |= TACLR;            // Limpa o timer TA.
+    __bic_SR_register_on_exit(LPM0_bits+GIE);
+    //Desativa a interrupcao ao sair
+}
+
+void timerA_setup(){
+    TA0CTL |= TACLR;            // Limpa o timer TA.
+    TA0CTL |= TASSEL_1;         // Usando ACLK (32,768kHz).
+    TA0CTL |= ID_0;             // Divide por 1.
+    TA0EX0 |= TAIDEX_2;         // Divide por 3 (extendido) (11khz).
+    TA0CCTL0 = CCIE;            // Ativa a interrupcao CCR0 do timer B0
+}
+
+void time_delay (int mult){
+    int ccr0 = 1;   //0,1 ms
+    timerA_setup();
+    TA0CCR0 = ccr0 * mult;
+    TA0CTL |= MC_1;
+    __bis_SR_register(LPM0_bits+GIE);
+    //Ativa a interrupcao e vai pra baixo consumo LPM0
+}
+

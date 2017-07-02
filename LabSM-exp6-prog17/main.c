@@ -64,13 +64,13 @@ __interrupt void Port_1(void){
                 __delay_cycles(5000);   // Debouncing
                 P1IFG &= ~BIT1;     // Reseta o sinal de interrupcao do S2.
                 break;
+            }else{
+                S2 = 0;     // Marca botao S2 como solto
+                __delay_cycles(5000);   // Debouncing
+                P1IFG &= ~BIT1;     // Reseta o sinal de interrupcao do S2.
+                P1IES |= BIT1;      // Modo de interrupcao entre edge up-down
+                break;
             }
-            else
-            S2 = 0;     // Marca botao S2 como solto
-            __delay_cycles(5000);   // Debouncing
-            P1IFG &= ~BIT1;     // Reseta o sinal de interrupcao do S2.
-            P1IES |= BIT1;      // Modo de interrupcao entre edge up-down
-            break;
         default:
             _never_executed();
     }
@@ -89,13 +89,13 @@ __interrupt void Port_2(void){
                    __delay_cycles(5000);   // Debouncing
                    P2IFG &= ~BIT1;     // Reseta o sinal de interrupcao do S2.
                    break;
-                }
-                else
+                }else{
                     S1 = 0;     // Marca botao S1 como solto
-                __delay_cycles(5000);   // Debouncing
-                P2IFG &= ~BIT1;     // Reseta o sinal de interrupcao do S1.
-                P2IES |= BIT1;      // Modo de interrupcao entre edge up-down
-                break;
+                    __delay_cycles(5000);   // Debouncing
+                    P2IFG &= ~BIT1;     // Reseta o sinal de interrupcao do S1.
+                    P2IES |= BIT1;      // Modo de interrupcao entre edge up-down
+                    break;
+                }
             default:
                 _never_executed();
     }
