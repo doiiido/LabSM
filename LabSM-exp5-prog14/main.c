@@ -71,9 +71,10 @@ void lcd_char(char byte){ //RS = 1, recebe um byte, quebra em 2 nibbles e escrev
 void lcd_Byte(char byte){ //recebe um byte, quebra em 2 nibbles e escreve com lcd_nib()
   char nibble1;
   char nibble2;
+  nibble1 = (byte & 0xF0);// Apagando os dados diferentes de xxxx0000
   nibble1 = (byte >> 4);
   lcd_nib(nibble1);
-  nibble2 = (byte);
+  nibble2 = (byte & 0x0F);// Apagando os dados diferentes de 0000xxxx
   lcd_nib(nibble2);
 }
 
