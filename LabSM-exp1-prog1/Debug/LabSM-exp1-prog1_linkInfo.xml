@@ -2,7 +2,7 @@
 <link_info>
    <banner>MSP430 Linker PC v16.9.1.LTS</banner>
    <copyright>Copyright (c) 2003-2015 Texas Instruments Incorporated</copyright>
-   <link_time>0x593ff046</link_time>
+   <link_time>0x5991dcc8</link_time>
    <link_errors>0x0</link_errors>
    <output_file>LabSM-exp1-prog1.out</output_file>
    <entry_point>
@@ -387,7 +387,7 @@
          <size>0xf7</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-378">
+      <object_component id="oc-379">
          <name>.debug_info</name>
          <load_address>0xf7</load_address>
          <run_address>0xf7</run_address>
@@ -407,7 +407,7 @@
          <size>0x4b</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-37b">
+      <object_component id="oc-378">
          <name>.debug_line</name>
          <load_address>0x4b</load_address>
          <run_address>0x4b</run_address>
@@ -441,7 +441,7 @@
          <size>0x20</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-379">
+      <object_component id="oc-37b">
          <name>.debug_aranges</name>
          <load_address>0x20</load_address>
          <run_address>0x20</run_address>
@@ -1121,7 +1121,7 @@
          <size>0x282</size>
          <contents>
             <object_component_ref idref="oc-6e"/>
-            <object_component_ref idref="oc-378"/>
+            <object_component_ref idref="oc-379"/>
             <object_component_ref idref="oc-3e0"/>
          </contents>
       </logical_group>
@@ -1132,7 +1132,7 @@
          <size>0x88</size>
          <contents>
             <object_component_ref idref="oc-71"/>
-            <object_component_ref idref="oc-37b"/>
+            <object_component_ref idref="oc-378"/>
          </contents>
       </logical_group>
       <logical_group id="lg-3d8" display="never" color="cyan">
@@ -1153,7 +1153,7 @@
          <size>0x40</size>
          <contents>
             <object_component_ref idref="oc-6f"/>
-            <object_component_ref idref="oc-379"/>
+            <object_component_ref idref="oc-37b"/>
          </contents>
       </logical_group>
       <logical_group id="lg-3dc" display="never" color="cyan">

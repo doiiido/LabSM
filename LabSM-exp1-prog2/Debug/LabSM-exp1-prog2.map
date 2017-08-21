@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v16.9.1                     
 ******************************************************************************
->> Linked Tue Jun 13 11:01:46 2017
+>> Linked Mon Aug 14 14:51:50 2017
 
 OUTPUT FILE NAME:   <LabSM-exp1-prog2.out>
 ENTRY POINT SYMBOL: "RESET"  address: 00004400
@@ -20,7 +20,7 @@ MEMORY CONFIGURATION
   INFOA                 00001980   00000080  00000000  00000080  RWIX
   USBRAM                00001c00   00000800  00000000  00000800  RWIX
   RAM                   00002400   00002000  00000000  00002000  RWIX
-  FLASH                 00004400   0000bb80  0000004e  0000bb32  RWIX
+  FLASH                 00004400   0000bb80  0000004a  0000bb36  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -95,12 +95,12 @@ section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
 .stack     0    00004400    00000000     
 
-.text      0    00004400    00000046     
-                  00004400    00000046     main.obj (.text)
+.text      0    00004400    00000042     
+                  00004400    00000042     main.obj (.text)
 
 .text:_isr 
-*          0    00004446    00000008     
-                  00004446    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
+*          0    00004442    00000008     
+                  00004442    00000008     rts430x_sc_sd_eabi.lib : isr_trap.obj (.text:_isr:__TI_ISR_TRAP)
 
 .cinit     0    00004400    00000000     UNINITIALIZED
 
@@ -191,9 +191,9 @@ MODULE SUMMARY
        Module         code   ro data   rw data
        ------         ----   -------   -------
     .\
-       main.obj       70     2         0      
+       main.obj       66     2         0      
     +--+--------------+------+---------+---------+
-       Total:         70     2         0      
+       Total:         66     2         0      
                                               
     C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.1.LTS\lib\rts430x_sc_sd_eabi.lib
        isr_trap.obj   8      0         0      
@@ -223,7 +223,7 @@ MODULE SUMMARY
        Total:         8      44        0      
                                               
     +--+--------------+------+---------+---------+
-       Grand Total:   78     46        0      
+       Grand Total:   74     46        0      
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -981,7 +981,7 @@ address   name
 0000015c  WDTCTL_L            
 00004400  __STACK_END         
 00000000  __STACK_SIZE        
-00004446  __TI_ISR_TRAP       
+00004442  __TI_ISR_TRAP       
 0000ffd2  __TI_int41          
 0000ffd4  __TI_int42          
 0000ffd6  __TI_int43          
@@ -1765,7 +1765,7 @@ address   name
 000023ff  USBIEPSIZXY_7       
 00004400  RESET               
 00004400  __STACK_END         
-00004446  __TI_ISR_TRAP       
+00004442  __TI_ISR_TRAP       
 0000ffd2  __TI_int41          
 0000ffd4  __TI_int42          
 0000ffd6  __TI_int43          

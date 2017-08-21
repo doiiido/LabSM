@@ -4,6 +4,7 @@
 #include <msp430.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define D4  BIT0
 #define D5  BIT1
@@ -11,6 +12,10 @@
 #define D7  BIT3
 #define RS BIT6
 #define EN BIT5
+#define TST(x, y)    (x & (y))
+#define SET(x, y)    (x |= (y))
+#define CLR(x, y)    (x &= ~(y))
+#define TOG(x, y)    (x ^= (y))
 
 void pulsa_e(void);
 void Instruction_mode(void);
@@ -26,6 +31,192 @@ void lcd_clr(void);
 void lcd_home(void);
 void lcd_str(char *pt);
 void time_delay(int mult);
+void pin_config(void);
+void clock_config(void);
+void timer_config(void);
+void adc_config(void);
+void itoa(int num, char to[]);
+void word_send(const char *str);
+void UART_setup(void);
+void muda_faixa(char *input);
+void listen(void);
+void screen_update(int value);
+
+volatile int high_temp = 55, low_temp = 45;
+int values[20];
+int * pointer = values;
+unsigned char volatile number_of_readings = 0;
+int volatile raw_value;
+unsigned char volatile five_seconds = 0;
+unsigned char volatile seconds_activated = 0;
+char input[100];
+unsigned int RXByteCtr = 0;
+int cnt = 0;
+volatile int previous = 0;
+volatile int  on = 0;
+
+
+
+
+int main(void) {
+    WDTCTL = WDTPW | WDTHOLD;   // Stop watchdog timer
+    UART_setup();
+
+    int temp;
+    int med = 0;
+    int out = 0;
+    char buff[6];
+
+    pin_config();
+    //clock_config();
+    lcd_pins();
+    lcd_init();
+    timer_config();
+    adc_config();
+    _enable_interrupt();                        // Enable global interrupt
+
+    word_send("Se quiser mudar a temperatura envie high ou low para mudar os limites \n \r");
+    word_send("Limiares: \n \r");
+    itoa(low_temp, buff);
+    word_send(buff);
+    word_send("<T<");
+    itoa(high_temp, buff);
+    word_send(buff);
+    word_send("\n \r");
+
+    while(1) {
+        if (cnt == 1) {
+            //Check if cnt is 1
+            cnt = 0;
+            //Reset cnt
+            RXByteCtr = 0;
+            muda_faixa(input);
+        }
+        while ( (ADC12IFG & BIT0) == 0);
+        number_of_readings++;
+        raw_value = ADC12MEM0;
+        raw_value = raw_value;
+        *pointer = raw_value;
+        if(med==0 || out == 3 || *pointer >= med -10 && *pointer <= med +10){
+            med = (med+*pointer)/2;
+            out = 0;    //resfriamento ou aquecimento muito acelerado (+ de 10 graus)
+        }
+        else{
+            out++;
+        }
+        if (pointer == values + 10) {
+            pointer = values;
+            temp = (int)(77-(12*med/458));
+            //itoa((med/37)-32, value);
+            //itoa(med, value);
+            if (temp != previous){
+                previous = temp;
+                lcd_init();
+                screen_update(temp);
+            }
+            if (!on && temp <= low_temp){
+                P2OUT |= BIT4;
+                on = 1;
+            }
+            if ( temp >= high_temp){
+                P2OUT &= ~BIT4;
+                on = 0;
+            }
+            /*if(on == 1){
+                if(count == 3 ){
+                    if (cut == 1){
+                        P2OUT |= BIT4;
+                        cut = 0;
+                        count =0;
+
+                    }else if (cut == 0){
+                        P2OUT &= ~BIT4;
+                        cut = 1;
+                        count = -2;
+                    }
+                }
+                count ++;
+            }*/
+        }
+        pointer++;
+    }
+}
+
+void screen_update(int value){
+    char buff[6];
+    itoa(value, buff);
+    lcd_cursor(0,0);
+    lcd_str("  Temperatura:");
+    lcd_cursor(0,1);
+    lcd_str("   ");
+    lcd_str(buff);
+    lcd_str(" C");
+    lcd_str(" ");
+    itoa(low_temp, buff);
+    lcd_str(buff);
+    lcd_str("<T<");
+    itoa(high_temp, buff);
+    lcd_str(buff);
+    word_send("Temperatura: \n \r");
+    itoa(value, buff);
+    word_send(buff);
+    word_send(" C \n \r");
+}
+
+void listen(void){
+    if (cnt == 1) {
+        //Check if cnt is 1
+        cnt = 0;
+        //Reset cnt
+        RXByteCtr = 0;
+    }
+}
+
+void muda_faixa(char *input){
+    int integer;
+    int i;
+    char buff[6];
+    P2OUT &= ~BIT4; // previne sobreaquecimento por erro no bluetooth
+    on = 0;
+    if(strcmp("high", input)==0){
+        word_send("Qual o limiar superior? \n \r");
+        while(cnt == 0);
+        listen();
+        for(i = 0; i< (int)(sizeof(input[i])/sizeof(input[0]));i++){
+            integer = (input[i]-'0');
+            if(integer<0 || integer >9 ){
+                word_send("Valor invalido! Operacao cancelada \n \r");
+                return;
+            }
+        }
+        integer = atoi(input);
+        high_temp = integer;
+        screen_update(previous);
+    }else if(strcmp("low", input)==0){
+        word_send("Qual o limiar inferior? \n \r");
+        while(cnt == 0);
+        listen();
+        for(i = 0; i< (int)(sizeof(input[i])/sizeof(input[0]));i++){
+            integer = (input[i]-'0');
+            if(integer<0 || integer >9 ){
+                word_send("Valor invalido! Operacao cancelada \n \r");
+                return;
+            }
+        }
+        integer = atoi(input);
+        low_temp = integer;
+        screen_update(previous);
+    }else
+        word_send("Nao entendi, mande high ou low pra mudar os limiares \n \r");
+
+    word_send("Limiares: \n \r");
+    itoa(low_temp, buff);
+    word_send(buff);
+    word_send("<T<");
+    itoa(high_temp, buff);
+    word_send(buff);
+    word_send("\n \r");
+}
 
 void pulsa_e(void){
   P3OUT |= EN;
@@ -60,7 +251,7 @@ void lcd_nib(char nibble){  //recebe um nibble 0000 xxxx, escreve no bus e pulsa
 }
 
 void lcd_cmd(char byte){  //RS = 0, recebe um byte, quebra em 2 nibbles e escreve com lcd_nib()
-  Instruction_mode();  // escrevendo uma instrução: RS=0
+  Instruction_mode();  // escrevendo uma instrucao: RS=0
   lcd_Byte(byte);
 }
 
@@ -80,7 +271,7 @@ void lcd_Byte(char byte){ //recebe um byte, quebra em 2 nibbles e escreve com lc
 }
 
 void lcd_init(void){
-  Instruction_mode();  // escrevendo uma instrução: RS=0
+  Instruction_mode();  // escrevendo uma instrucao: RS=0
   lcd_nib(0x3);
   time_delay(150);
   lcd_nib(0x3);
@@ -165,97 +356,44 @@ void itoa(int num, char to[]){
 
 
 
-
-//***************************************************************************************
-//  Laboratório de Arquitetura de Processadores Digitais - Turma B
-//
-//  Alunos/Autores:
-//                  Cassio Fabius Cambraia Ribeiro  - 16/0025567
-//                  Matheus Cordeiro Lima           - 16/0137837
-//
-//  Projeto Final -  Conversor A/D para amostrar a tensão de entrada de apenas um eixo do
-//                   joystick (ou de um potênciômetro de 10kOhm).
-//
-//  Data: 29 de junho de 2017
-//
-//  Feito no Code Composer Studio 7.0
-//  Modelo utilizado: MSP430F5529 LaunchPad
-//***************************************************************************************
-
-
-
-#include <msp430.h>
-
-void pin_config(void);
-void clock_config(void);
-void timer_config(void);
-void adc_config(void);
-
-#define TST(x, y)    (x & (y))
-#define SET(x, y)    (x |= (y))
-#define CLR(x, y)    (x &= ~(y))
-#define TOG(x, y)    (x ^= (y))
-
-// A amostragem deve ser feita a cada 200ms e uma estrutura de dados deve
-// armazenar os dados dos últimos 20 segundos de amostragem.
-// Então, em 20 000ms haverá 100 leituras. É necessário uma estrutura com
-// 100 posições. Utilizaremos um array e um ponteiro para percorrê-lo.
-int values[100];
-int * pointer = values;
-unsigned char volatile number_of_readings = 0;
-int volatile raw_value;
-
-// É necessário uma variável para verificar o último estado em que ficou úmido.
-// Por exemplo, se estava úmido (last_state = 0), e aí ficou seco (last_state = 1),
-// a bomba será acionada por alguns segundos. A bomba será desligada quando ficar
-// úmido novamente (last_state = 0) ou se passar muito tempo com ela ligada.
-// Isso serve para evitar que a bomba queime, caso o pote fique vazio,
-// ou caso o sensor tenha queimado/saído da terra e acabe inundando o vaso.
-unsigned char volatile five_seconds = 0;
-unsigned char volatile seconds_activated = 0;
-
-// Para um resistor de 2,5kOhm como resistor de entrada externa do conversor AD,
-// o tempo de amostragem deve ser:
-// tsample > (2,5k + 1,8k) x ln(2^13).25p + 800ns
-// tsample > 1,77us
-
-
-void main(void) {
-    char value [6];
-
-    pin_config();
-    clock_config();
-    lcd_pins();
-    lcd_init();
-    timer_config();
-    adc_config();
-//    _enable_interrupt();                        // Enable global interrupt
-
-    while(1) {
-        while ( (ADC12IFG & BIT0) == 0);
-        number_of_readings++;
-        raw_value = ADC12MEM0;
-        raw_value = raw_value;
-        *pointer = raw_value;
-
-        if (pointer == values + 99) {
-            pointer = values;
-        }
-
-//        CLR(P1OUT, BIT2);
-
-        itoa(*pointer, value);
-        lcd_cursor(0,0);
-        lcd_str(value);
-
-        pointer++;
-    }
-
+void word_send(const char *str){
+    while (*str != 0) { //Do this during current element is not
+           //equal to null character
+           while (!(UCTXIFG & UCA0IFG))
+               ;
+           //Ensure that transmit interrupt flag is set
+           UCA0TXBUF = *str++;
+           //Load UCA0TXBUF with current string element
+       }       //then go to the next element
 }
 
+void UART_setup(void){
+    P3SEL = BIT3 + BIT4;                        // P3.3,4 = USCI_A0 TXD/RXD
+       UCA0CTL1 |= UCSWRST;                      // **Put state machine in reset**
+       UCA0CTL1 |= UCSSEL_2;                     // SMCLK
+       UCA0BR0 = 6;                              // 1MHz 9600 (see User's Guide)
+       UCA0BR1 = 0;                              // 1MHz 9600
+       UCA0MCTL = UCBRS_0 + UCBRF_13 + UCOS16;   // Modln UCBRSx=0, UCBRFx=0,
+   // over sampling
+       UCA0CTL1 &= ~UCSWRST;                   // **Initialize USCI state machine**
+       UCA0IE |= UCRXIE;                         // Enable USCI_A0 RX interrupt
+}
+
+#pragma vector=USCI_A0_VECTOR
+__interrupt void USCI_A0_ISR(void){   //Check if the UCA0RXBUF is different from 0x0A
+    //(Enter key from keyboard)
+        if(UCA0RXBUF != 0x0A) input[RXByteCtr++] = UCA0RXBUF;
+    //If it is, load received character
+    //to current input string element
+        else {cnt = 1;
+            //If it is not, set cnt
+            input[RXByteCtr-1] = 0;
+        }   //Add null character at the end of input string (on the /r)
+    }
+
 //----------------------------------------------------------------------------------------
-/*
-#pragma vector = ADC12_VECTOR
+
+/*#pragma vector = ADC12_VECTOR
 __interrupt void ADC12_ISR(void){
     switch(__even_in_range(ADC12IV, 34)) {
         case 6:
@@ -279,14 +417,12 @@ void pin_config(void) {
     WDTCTL = WDTPW | WDTHOLD;                   // Stop watchdog timer
 
     // Entrada analógica A1 (P6.1)
-    SET(P6SEL, BIT4);                           // Seleciona P6.4 com função I/O.
+    SET(P6SEL, BIT4);                           // Seleciona P6.4 com funcao I/O.
 
-/*
-    // Saída para o Relé = P1.2
-    P1SEL &= ~BIT2;                             // Seleciona P1.0 com função I/O.
-    P1DIR |= BIT2;                              // P1.0, que é o LED1, será saída.
-    P1OUT &= ~BIT2;                             // Define LED1 como apagado.
-    */
+    //Rele
+    P2DIR |= BIT4;              // Marca o pino P2.4 como saida.
+    P2DS |= BIT4;               // Drive Strength high
+    P2OUT &= ~BIT4;             // Marca o pino como desligado.
 }
 //----------------------------------------------------------------------------------------
 
@@ -328,9 +464,9 @@ void timer_config(void) {
     TA0CTL = (TASSEL__SMCLK |                   // SMCLK = 1MHz
               ID__4         |                   // Dividir por 4: 1MHz/4 = 250kHz
               MC__UP);                          // Modo UP
-    TA0CCR0 = 50000;                            // 5Hz, 5 batidas por segundo
+    TA0CCR0 = 25000;                            // 5Hz, 5 batidas por segundo
     TA0CCTL1 = OUTMOD_6;                        // Modo toogle/set
-    TA0CCR1 = 25000;
+    TA0CCR1 = 12500;
 }
 
 void adc_config(void) {
@@ -341,7 +477,7 @@ void adc_config(void) {
     ADC12CTL0 = (ADC12SHT0_3 |                  // ADC tempo amostragem ADCMEM[0-7]
                 ADC12ON);                       // Ligar ADC
 
-    ADC12CTL1 = (ADC12CSTARTADD_0 |             // Armazenar na Posição 0
+    ADC12CTL1 = (ADC12CSTARTADD_0 |             // Armazenar na Posicao 0
                 ADC12SHS_1        |             // Usar TA0.1 (Selecionar (ADC12SC bit))
                 ADC12SHP          |             // S/H usar timer
                 ADC12DIV_0        |             // Divisor = 1
@@ -349,7 +485,7 @@ void adc_config(void) {
                 ADC12CONSEQ_2);                 // Modo Único Canal
 
     ADC12CTL2  = (ADC12TCOFF |                  // Desligar sensor temperatura
-                 ADC12RES_2);                   // Resolução 12-bit
+                 ADC12RES_2);                   // Resolucao 12-bit
 
     ADC12MCTL0 = (ADC12EOS   |                  // Fim
                  ADC12SREF_0 |                  // VR+ = AVCC e VR- = AVSS

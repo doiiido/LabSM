@@ -31,13 +31,13 @@ vetor:	.byte	12,"L","I","N","C","O","L","N","B","R","U","N","O"
 
 			mov.w 	#vetor,R5				;Copia o vetor para R5
 			call 	#menor					;Chama a subrotina menor
-			jmp 	$						;Pausa a execuÃ§Ã£o apos a rotina
+			jmp 	$						;Pausa a execução apos a rotina
 
 menor:		mov.b 	#0x00,R7				;zerando R7
 			mov.b 	#0xFF,R6				;enchendo R6
 			mov.b 	@R5,R8					;copia o primeiro elemento para R8
 
-loop:		inc 	R5						;ponteiro passa para o prÃ³ximo elemento de R5
+loop:		inc 	R5						;ponteiro passa para o próximo elemento de R5
 			cmp.b	@R5,R6					;compara o elemento de R5 atual com o de R6
 			jeq		LB1						;se forem iguais pula para LB1
 			jlo 	LB2						;se R6 for menor que o elemento de R5 vai para LB2

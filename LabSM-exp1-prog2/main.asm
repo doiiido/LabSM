@@ -31,18 +31,16 @@ vetor:	.byte	6,0,"L","I","N","C","O","L","N","B","R","U","N","O"
 
 			mov.w 	#vetor,R5				;Copia o vetor para R5
 			call 	#MAIOR16				;Chama subrotina MAIOR16
-			jmp 	$						;Pausa a execu√ßao
+			jmp 	$						;Pausa a execuÁ„o
 
 MAIOR16:	mov.b 	#0x00,R7				;Esvazia R7
-			mov.b 	#0x00,R6				;Esvazia R6
-			mov.b 	@R5,R8					;Copia o tamanho do vetor para R8
-			incd 	R5						;Pula 2 posi√ßoes, indo pra L
+			mov.w 	#0x00,R6				;Esvazia R6
+			mov.w 	@R5,R8					;Copia o tamanho do vetor para R8
+			incd 	R5						;Pula 2 posiÁıes, indo pra L
 
 
 loop:		mov.w 	#0x00,R9				;Esvazia R9
-			add.b	@R5, R9					;Adiciona os primeiro 8 bits para R9
-			inc 	R5						;Avan√ßa metade da palavra
-			add.b	@R5, R9					;Adiciona os outros 8 bits da palavra para R9
+			add.w	@R5, R9					;Adiciona os primeiro 8 bits para R9
 			inc 	R5						;Proxima palavra
 			cmp.w	R9,R6					;Compara R9 a maior soma ja encontrada
 			jeq		LB1						;Caso a soma ja exista
@@ -53,7 +51,7 @@ loop:		mov.w 	#0x00,R9				;Esvazia R9
 LB1:		inc		R7						;Marca a ocorrencia
 
 LB2:		dec 	R8						;Decrementa o tamanho restante
-			jnz		loop					;Se ainda h√° o que olhar executa a subrotina novamente
+			jnz		loop					;Se ainda h· o que olhar executa a subrotina novamente
 			ret
 
                                             
