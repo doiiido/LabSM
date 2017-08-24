@@ -1,7 +1,7 @@
 ******************************************************************************
-                  MSP430 Linker Unix v16.9.1                   
+                  MSP430 Linker PC v16.9.1                     
 ******************************************************************************
->> Linked Sun May 28 15:27:15 2017
+>> Linked Mon Aug 21 14:00:54 2017
 
 OUTPUT FILE NAME:   <LabSM-exp2-prog6.out>
 ENTRY POINT SYMBOL: "RESET"  address: 00004400
@@ -193,12 +193,12 @@ MODULE SUMMARY
 
        Module         code   ro data   rw data
        ------         ----   -------   -------
-    ./
+    .\
        main.obj       88     2         13     
     +--+--------------+------+---------+---------+
        Total:         88     2         13     
                                               
-    /home/lincoln/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.1.LTS/lib/rts430x_sc_sd_eabi.lib
+    C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.1.LTS\lib\rts430x_sc_sd_eabi.lib
        isr_trap.obj   8      0         0      
        int41.obj      0      2         0      
        int42.obj      0      2         0      
