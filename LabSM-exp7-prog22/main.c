@@ -46,7 +46,7 @@ void main(void) {
         if((UCB0IFG & UCNACKIFG) == UCNACKIFG){
             UCB0IFG &= ~UCNACKIFG;
         }else{
-            endereco = i;
+            address = i;
             break;
         }
     }

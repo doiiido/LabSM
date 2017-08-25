@@ -1,7 +1,7 @@
 ******************************************************************************
-                  MSP430 Linker PC v16.9.1                     
+                  MSP430 Linker PC v16.9.3                     
 ******************************************************************************
->> Linked Mon Jul 03 15:40:44 2017
+>> Linked Fri Aug 25 02:23:41 2017
 
 OUTPUT FILE NAME:   <LabSM-exp5-prog14.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_noexit"  address: 00004416
@@ -218,7 +218,7 @@ MODULE SUMMARY
     +--+------------------+------+---------+---------+
        Total:             478    16        0      
                                                   
-    C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.1.LTS\lib\rts430x_lc_rd_eabi.lib
+    C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.3.LTS\lib\rts430x_lc_rd_eabi.lib
        boot_special.obj   18     0         0      
        isr_trap.obj       8      0         0      
        exit.obj           6      0         0      

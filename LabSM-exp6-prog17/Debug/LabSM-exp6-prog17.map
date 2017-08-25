@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v16.9.3                     
 ******************************************************************************
->> Linked Sat Jul 01 21:48:06 2017
+>> Linked Fri Aug 25 02:23:46 2017
 
 OUTPUT FILE NAME:   <LabSM-exp6-prog17.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_noexit"  address: 000045d4
