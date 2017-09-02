@@ -46,8 +46,10 @@ __interrupt void Port_1(void){
     switch (__even_in_range( P1IV, P1IV_P1IFG7 )){
         case P1IV_P1IFG1:
             if (S2==0){     // Verifica o botao S1 (0=solto 1=apertado)
-                if (!pisca)
+                if (!pisca){
+                    BAKLED4_7 = P4OUT;  // Salva o estado do led 2
                     P4OUT ^= BIT7;  // Alterna o LED P4.7
+                }
                 S2 = 1;     // Marca botao S2 como apertado
                 P1IES &= ~BIT1;      // Modo de interrupcao entre edge down-up
                 __delay_cycles(5000);   // Debouncing
@@ -73,8 +75,10 @@ __interrupt void Port_2(void){
     switch (__even_in_range( P2IV, P2IV_P2IFG7 )){
             case P2IV_P2IFG1:
                 if (S1==0){     // Verifica o botao S1 (0=solto 1=apertado)
-                   if (!pisca)
+                   if (!pisca){
+                       BAKLED1_0 = P1OUT;  // Salva o estado do led 1
                        P1OUT ^= BIT0;  // Alterna o LED P1.0
+                   }
                    S1 = 1;     // Marca botao S1 como apertado
                    P2IES &= ~BIT1;      // Modo de interrupcao entre edge down-up
                    __delay_cycles(5000);   // Debouncing
@@ -104,9 +108,6 @@ void pisca2(void) {
         }
     }else{
         if(S2==1 && S1==1){
-            BAKLED1_0 = P1OUT;  // Salva o estado do led 1
-            BAKLED4_7 = P4OUT;  // Salva o estado do led 2
-
             P1OUT &= ~BIT0;         // Marca o LED como desligado para comecar certo.
             P4OUT |= BIT7;          // Marca o LED como ligado para comecar certo.
             pisca = 1;
