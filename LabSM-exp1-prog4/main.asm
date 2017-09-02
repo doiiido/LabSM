@@ -39,14 +39,17 @@ W16_ASC:	mov		#0x0,R7					;Esvazia R7, contador de bits 0-16 para word 16bit
 			mov		#0x0,R10				;Esvazia R10
 
 loop:		inc		R9						;Proximo nibble
+;			add		#1,R9					Instrução equivalente ao INC
 			cmp.b	#0x5,R9					;Verifica se completou um nibble
 			jeq		Write					;escreve o nibble
 			inc 	R7						;lendo o proximo bit
+;			add		#1,R7					Instrução equivalente ao INC
 			rrc 	R6						;Extrai o bit LSB
 			jc		bit1					;Se o bit for 1 vai pra bit1
 			jmp 	loop					;repete
 
 bit1:		clrc							;Limpando o carry
+;			BIC #1,SR						Instrução equivalente ao clrc
 			cmp.b	#0x1,R9
 			jeq		case1					;se a grandeza for 1, vai pra case 1
 			cmp.b	#0x2,R9
@@ -78,12 +81,14 @@ number:		add		#48,R10					;Adiciona 48 para ficar a partir do 0 ASCII
 			mov.b	R10,0(R5)				;Escreve o nibble
 			mov.b	#0x0,R10				;RecomenÃ§ando o nibble
 			dec		R5						;proximo a ser escrito
+;			sub		#1,R5					Instrução equivalente ao DEC
 			jmp		Exit
 
 char:		add		#55,R10					;Adiciona 55 para ficar a partir do A ASCII
 			mov.b	R10,0(R5)				;Escreve o nibble
 			mov.b	#0x0,R10				;RecomenÃ§ando o nibble
 			dec		R5						;proximo a ser escrito
+;			sub		#1,R5					Instrução equivalente ao DEC
 			jmp		Exit
 
 
@@ -93,6 +98,7 @@ Exit:		mov		#0x0,R9					;novo nibble
 			jlo		loop					;se nao, roda denovo
 
 BRK:		ret								;fim da subrotina
+;			mov		@SP+,PC					Instrução equivalente ao RET
 
 
 ;-------------------------------------------------------------------------------

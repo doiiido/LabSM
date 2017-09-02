@@ -37,11 +37,13 @@ MAIOR16:	mov.b 	#0x00,R7				;Esvazia R7
 			mov.w 	#0x00,R6				;Esvazia R6
 			mov.w 	@R5,R8					;Copia o tamanho do vetor para R8
 			incd 	R5						;Pula 2 posições, indo pra L
+;			add		#2,R5					Instrução equivalente ao INC
 
 
 loop:		mov.w 	#0x00,R9				;Esvazia R9
 			add.w	@R5, R9					;Adiciona os primeiro 8 bits para R9
 			inc 	R5						;Proxima palavra
+;			add		#1,R5					Instrução equivalente ao INC
 			cmp.w	R9,R6					;Compara R9 a maior soma ja encontrada
 			jeq		LB1						;Caso a soma ja exista
 			jc	 	LB2						;Caso a soma seja maior que R9
@@ -49,10 +51,13 @@ loop:		mov.w 	#0x00,R9				;Esvazia R9
 			mov.b 	#0x00,R7				;Zerando as ocorrencias
 
 LB1:		inc		R7						;Marca a ocorrencia
+;			add		#1,R7					Instrução equivalente ao INC
 
 LB2:		dec 	R8						;Decrementa o tamanho restante
+;			sub		#1,R5					Instrução equivalente ao DEC
 			jnz		loop					;Se ainda há o que olhar executa a subrotina novamente
 			ret
+;			mov		@SP+,PC					Instrução equivalente ao RET
 
                                             
 

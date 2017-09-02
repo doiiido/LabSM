@@ -54,28 +54,39 @@ big9:		cmp.b	#65,R11					;Testa se é menor que 0x41 e maior q 0x39
 			sub		#55,R11					;Se não for, subtrai de 0x37 p/ ASCII
 
 valido:		inc		R5						;Caminha com o ponteiro
+;			add		#1,R5					Instrução equivalente ao INC
 			decd	R8						;Volta 4 bits e
+;			sub		#2,R8					Instrução equivalente ao DECD
 			decd	R8						;mata primeiro hex
+;			sub		#2,R8					Instrução equivalente ao DECD
 			mov.b	R8,R10					;R10 é um contador auxiliar p/ somar R11 ao R6
 			jz		ultimo
 
 lb:											;Pegar o nº obtido com R11 e somar ao R6
 			clrc
+;			BIC #1,SR						Instrução equivalente ao clrc
 			rlc		R11						;Rotacionar o R11 até chega nos bits que interessam
-			dec		R10						;Usa o contador auxiliar pra chegar nos bits queinteressam
+;			ADDC	R11,R11					Instrução equivalente ao rlc
+			dec		R10						;Usa o contador auxiliar pra chegar nos bits que interessam
+;			sub		#1,R10					Instrução equivalente ao DEC
 			jnz		lb
 			clrz
+;			BIC #2,SR						Instrução equivalente ao clrz
 
 ultimo:		add		R11,R6					;Vai montando em R6 a palavra de 16 bits
 			dec		R7						;Decrementa o contador
+;			sub		#1,R7					Instrução equivalente ao DEC
 			jnz		ASC_W16					;Volta pra achar prox hexadecimal até zerar R7
 			setc							;Sucesso! Retorna com o carry em 1
+;			BIS #1,SR						Instrução equivalente ao setc
 			jmp 	OK						;Marcar sucesso
 
 invalido:	clrc							;Deu invalido. Retorna o carry em 0
+;			BIC #1,SR						Instrução equivalente ao clrc
 			jmp		NOK						;Marcar falha
 
 			ret
+;			mov		@SP+,PC					Instrução equivalente ao RET
 
 ;----------------------------------------------------------------------------
 ; Segmento de dados inicializados (0x2400)

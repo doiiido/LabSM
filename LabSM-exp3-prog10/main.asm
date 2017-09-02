@@ -27,7 +27,7 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 ;Alunos: Lincoln Abreu Barbosa 140045023
 ;        Bruno Freitas Feitosa Nunes 120112388
 
-            mov #0, R5						; Inicializando contadores
+Init:       mov #0, R5						; Inicializando contadores
             mov #0, R6						; Inicializando contadores
 
             bis.b   #BIT0, &P1DIR           ; Marca o LED em P1.0 como saida.
@@ -48,7 +48,7 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
             bis.w   #LPM4|GIE, SR           ; Ativa a interrupcao e vai pra baixo consumo LPM4
             nop
 
-S2_ISR:
+Conta:
             xor.b   #BIT1, &P1IES			; Alterna o modo de interrupcao entre edge up-down e down-up
             cmp.b   #1, R5					; Contagem do aperta/solta botao (0=solto 1=apertado)
             jeq     Fim_ISRS2				; Rotina do solta botao
@@ -81,7 +81,7 @@ loop:		inc 	R7
 
 ;Interrupt Config:
            .sect    ".int47"   				; Interrupt so pino 1.1
-           .short   S2_ISR  				; Rotina de interrupcao
+           .short   Conta  				; Rotina de interrupcao
 ;-------------------------------------------------------------------------------
 ; Stack Pointer definition
 ;-------------------------------------------------------------------------------

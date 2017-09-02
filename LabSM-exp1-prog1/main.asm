@@ -38,6 +38,7 @@ menor:		mov.b 	#0x00,R7				;zerando R7
 			mov.b 	@R5,R8					;copia o primeiro elemento para R8
 
 loop:		inc 	R5						;ponteiro passa para o próximo elemento de R5
+;			add		#1,R5					Instrução equivalente ao INC
 			cmp.b	@R5,R6					;compara o elemento de R5 atual com o de R6
 			jeq		LB1						;se forem iguais pula para LB1
 			jlo 	LB2						;se R6 for menor que o elemento de R5 vai para LB2
@@ -45,10 +46,14 @@ loop:		inc 	R5						;ponteiro passa para o próximo elemento de R5
 			mov.b 	#0x00,R7				;Zerando R7
 
 LB1:		inc		R7						;Incrementa R7
+;			add		#1,R7					Instrução equivalente ao INC
 
 LB2:		dec 	R8						;Decrementa R8
+;			sub		#1,R8					Instrução equivalente ao DEC
 			jnz		loop					;se R8 nao for zero volta pra loop
 			ret								;Fim da subrotina
+;			mov		@SP+,PC					Instrução equivalente ao RET
+
 
 ;-------------------------------------------------------------------------------
 ; Stack Pointer definition

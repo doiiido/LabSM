@@ -121,33 +121,33 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-LabSM-exp6-prog17.out \
+OLD_LabSM-exp6-prog17.out \
 
 EXE_OUTPUTS__QUOTED += \
-"LabSM-exp6-prog17.out" \
+"OLD_LabSM-exp6-prog17.out" \
 
 BIN_OUTPUTS += \
-LabSM-exp6-prog17.hex \
+OLD_LabSM-exp6-prog17.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"LabSM-exp6-prog17.hex" \
+"OLD_LabSM-exp6-prog17.hex" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "LabSM-exp6-prog17.out"
+	@$(MAKE) --no-print-directory -Onone "OLD_LabSM-exp6-prog17.out"
 
 # Tool invocations
-LabSM-exp6-prog17.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+OLD_LabSM-exp6-prog17.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --define=__MSP430F5529__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 -z -m"LabSM-exp6-prog17.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccsv7/ccs_base/msp430/include" -i"C:/ti/ccsv7/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/lib" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="LabSM-exp6-prog17_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "LabSM-exp6-prog17.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --define=__MSP430F5529__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 -z -m"OLD_LabSM-exp6-prog17.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccsv7/ccs_base/msp430/include" -i"C:/ti/ccsv7/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/lib" -i"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="OLD_LabSM-exp6-prog17_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "OLD_LabSM-exp6-prog17.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-LabSM-exp6-prog17.hex: $(EXE_OUTPUTS)
+OLD_LabSM-exp6-prog17.hex: $(EXE_OUTPUTS)
 	@echo 'Invoking: MSP430 Hex Utility'
-	"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/bin/hex430" --memwidth=8 --romwidth=8 -o "LabSM-exp6-prog17.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccsv7/tools/compiler/ti-cgt-msp430_16.9.3.LTS/bin/hex430" --memwidth=8 --romwidth=8 -o "OLD_LabSM-exp6-prog17.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $@'
 	@echo ' '
 
