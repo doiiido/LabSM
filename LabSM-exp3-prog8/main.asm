@@ -25,39 +25,63 @@ StopWDT     mov.w   #WDTPW|WDTHOLD,&WDTCTL  ; Stop watchdog timer
 ;-------------------------------------------------------------------------------
 
 ;Alunos: Lincoln Abreu Barbosa 140045023
-;		 Bruno Freitas Feitosa Nunes 120112388
+;        Bruno Freitas Feitosa Nunes 120112388
 
-			bis.b	#BIT0, &P1DIR	        ; Marca o LED em P1.0 como saida.
-		    bic.b	#BIT0, &P1OUT			; Marca o LED como desligado para comessar certo.
+Init:       mov #0, R5						; Inicializando contadores
+            mov #0, R6						; Inicializando contadores
 
-		    bis.w	#TACLR, &TA0CTL			; Limpa o timer TA.
+            bis.b   #BIT0, &P1DIR           ; Marca o LED em P1.0 como saida.
+            bic.b   #BIT0, &P1OUT           ; Marca o LED como desligado para comessar certo.
 
-		    bis.w	#TASSEL_1, &TA0CTL		; Usando ACLK (32768 Hz).
-		    bis.w	#ID_0, &TA0CTL			; Divide por 1.
-		    bis.b	#TAIDEX_0, &TA0EX0		; Divide por 1 (extendido).
+            bis.b   #BIT7, &P4DIR           ; Marca o LED em P4.7 como saida.
+            bic.b   #BIT7, &P4OUT           ; Marca o LED como desligado para comessar certo.
 
-		    bis.w	#TAIE, &TA0CTL			; Ativa a interrupcao do timer TA0.
+            bic.b   #BIT1, &P1DIR           ; Marca o pino P1.1 como entrada para S2.
+            bis.b   #BIT1, &P1REN           ; Marca a entrada do pino P1.1 com resistor.
+            bis.b   #BIT1, &P1OUT           ; Marca o resistor da entrada P1.1 como pullup.
 
-			bis.w	#16384, &TA0CCR0		; Marca o TA0CCR0 como 16384, resultando em uma chamada de 2Hz
-											; da rotina
+            bis.b   #BIT1, &P1IE            ; Ativa a interrupcao do S2.
+            bis.b   #BIT1, &P1IES			; Modo de interrupcao para edge up-down
+            bic.b   #BIT1, &P1IFG			; Limpa flag de interrupcao
 
-		    bis.w	#MC_1, &TA0CTL			; Marca o modo de timer para contar ate TA0CCR0.
+            nop
+            bis.w   #LPM4|GIE, SR           ; Ativa a interrupcao e vai pra baixo consumo LPM4
+            nop
 
+Conta:
+            xor.b   #BIT1, &P1IES			; Alterna o modo de interrupcao entre edge up-down e down-up
+            cmp.b   #1, R5					; Contagem do aperta/solta botao (0=solto 1=apertado)
+            jeq     Fim_ISRS2				; Rotina do solta botao
+            mov 	#1, R5					; Botao apertado
+            xor.b   #BIT7, &P4OUT           ; Alterna o LED P4.7
+            cmp		#1, R6					; Se contador do LSB ja era 1, alterna o MSB
+            jeq		MSB
+            mov 	#1, R6					; LSB = 1
+            call    #Debouncing_Timer
+            reti                            ; Volta pra interrupcao
+
+Fim_ISRS2:  mov #0, R5						; Marca o botao como solto
+            call    #Debouncing_Timer
+            reti                            ; Volta pra interrupcao
+
+MSB:	  	mov #0, R6						; LSB = 0
+			xor.b   #BIT0, &P1OUT           ; Alterna o LED P1.0
+            call    #Debouncing_Timer
+            reti                            ; Volta pra interrupcao
+
+Debouncing_Timer:
+            mov.w	#0, R7         			; Limpa o timer.
+Timer:		cmp.w	#500, R7				; Timer por 500 loops
+			jlo		loop
+            bic.b   #BIT1, &P1IFG			; Limpa flags geradas durante o debouncing
+			ret
+loop:		inc 	R7
+			jmp		Timer
 			nop
-		    bis.w	#LPM3|GIE, SR			; Ativa a interrupcao e vai pra baixo consumo LPM3
-		    nop
 
-TAinterruptRoutine:
-            bic.w	#TAIFG, &TA0CTL			; Reseta o sinal de interrupcao.
-            xor.b	#BIT0, &P1OUT			; Alterna o LED P1.0
-            reti							; Volta pra interrupcao
-
-;-------------------------------------------------------------------------------
-;Configuracao Interrupcao:
-;-------------------------------------------------------------------------------
-            .sect   ".int52"   				; Interrupt do timer
-            .short  TAinterruptRoutine  	; Rotina de interrupcao do timer
-
+;Interrupt Config:
+           .sect    ".int47"   				; Interrupt so pino 1.1
+           .short   Conta  				; Rotina de interrupcao
 ;-------------------------------------------------------------------------------
 ; Stack Pointer definition
 ;-------------------------------------------------------------------------------
