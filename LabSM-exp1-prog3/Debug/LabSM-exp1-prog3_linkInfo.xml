@@ -2,7 +2,7 @@
 <link_info>
    <banner>MSP430 Linker PC v16.9.3.LTS</banner>
    <copyright>Copyright (c) 2003-2017 Texas Instruments Incorporated</copyright>
-   <link_time>0x599fb44a</link_time>
+   <link_time>0x59aaded3</link_time>
    <link_errors>0x0</link_errors>
    <output_file>LabSM-exp1-prog3.out</output_file>
    <entry_point>
@@ -446,7 +446,7 @@
          <size>0x20</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-379">
+      <object_component id="oc-37a">
          <name>.debug_aranges</name>
          <load_address>0x20</load_address>
          <run_address>0x20</run_address>
@@ -460,7 +460,7 @@
          <size>0x2a</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-37a">
+      <object_component id="oc-379">
          <name>.debug_pubnames</name>
          <load_address>0x2a</load_address>
          <run_address>0x2a</run_address>
@@ -1158,7 +1158,7 @@
          <size>0x40</size>
          <contents>
             <object_component_ref idref="oc-6f"/>
-            <object_component_ref idref="oc-379"/>
+            <object_component_ref idref="oc-37a"/>
          </contents>
       </logical_group>
       <logical_group id="lg-3dc" display="never" color="cyan">
@@ -1168,7 +1168,7 @@
          <size>0x55</size>
          <contents>
             <object_component_ref idref="oc-70"/>
-            <object_component_ref idref="oc-37a"/>
+            <object_component_ref idref="oc-379"/>
          </contents>
       </logical_group>
       <load_segment id="lg-3e2" display="no" color="cyan">

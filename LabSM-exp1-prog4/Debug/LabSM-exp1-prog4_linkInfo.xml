@@ -2,7 +2,7 @@
 <link_info>
    <banner>MSP430 Linker PC v16.9.3.LTS</banner>
    <copyright>Copyright (c) 2003-2017 Texas Instruments Incorporated</copyright>
-   <link_time>0x59a4612c</link_time>
+   <link_time>0x59aaded4</link_time>
    <link_errors>0x0</link_errors>
    <output_file>LabSM-exp1-prog4.out</output_file>
    <entry_point>
@@ -392,7 +392,7 @@
          <size>0xfa</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-378">
+      <object_component id="oc-379">
          <name>.debug_info</name>
          <load_address>0xfa</load_address>
          <run_address>0xfa</run_address>
@@ -412,7 +412,7 @@
          <size>0x6e</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-37b">
+      <object_component id="oc-378">
          <name>.debug_line</name>
          <load_address>0x6e</load_address>
          <run_address>0x6e</run_address>
@@ -446,7 +446,7 @@
          <size>0x20</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-37a">
+      <object_component id="oc-37b">
          <name>.debug_aranges</name>
          <load_address>0x20</load_address>
          <run_address>0x20</run_address>
@@ -460,7 +460,7 @@
          <size>0x2b</size>
          <input_file_ref idref="fl-2"/>
       </object_component>
-      <object_component id="oc-379">
+      <object_component id="oc-37a">
          <name>.debug_pubnames</name>
          <load_address>0x2b</load_address>
          <run_address>0x2b</run_address>
@@ -1126,7 +1126,7 @@
          <size>0x285</size>
          <contents>
             <object_component_ref idref="oc-6e"/>
-            <object_component_ref idref="oc-378"/>
+            <object_component_ref idref="oc-379"/>
             <object_component_ref idref="oc-3e0"/>
          </contents>
       </logical_group>
@@ -1137,7 +1137,7 @@
          <size>0xab</size>
          <contents>
             <object_component_ref idref="oc-71"/>
-            <object_component_ref idref="oc-37b"/>
+            <object_component_ref idref="oc-378"/>
          </contents>
       </logical_group>
       <logical_group id="lg-3d8" display="never" color="cyan">
@@ -1158,7 +1158,7 @@
          <size>0x40</size>
          <contents>
             <object_component_ref idref="oc-6f"/>
-            <object_component_ref idref="oc-37a"/>
+            <object_component_ref idref="oc-37b"/>
          </contents>
       </logical_group>
       <logical_group id="lg-3dc" display="never" color="cyan">
@@ -1168,7 +1168,7 @@
          <size>0x56</size>
          <contents>
             <object_component_ref idref="oc-70"/>
-            <object_component_ref idref="oc-379"/>
+            <object_component_ref idref="oc-37a"/>
          </contents>
       </logical_group>
       <load_segment id="lg-3e2" display="no" color="cyan">
