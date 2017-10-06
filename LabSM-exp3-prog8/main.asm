@@ -70,10 +70,12 @@ MSB:	  	mov #0, R6						; LSB = 0
             reti                            ; Volta pra interrupcao
 
 Debouncing_Timer:
+			push.w	R7
             mov.w	#0, R7         			; Limpa o timer.
 Timer:		cmp.w	#500, R7				; Timer por 500 loops
 			jlo		loop
             bic.b   #BIT1, &P1IFG			; Limpa flags geradas durante o debouncing
+            pop.w	R7
 			ret
 loop:		inc 	R7
 			jmp		Timer
