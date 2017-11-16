@@ -51,7 +51,7 @@ void main(void) {
         }
     }
 
-    while(1);
+//    while(1);
     itoa(address, addr);
     lcd_cursor(0,0);
     lcd_char(addr);

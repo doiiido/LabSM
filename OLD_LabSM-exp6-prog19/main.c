@@ -27,7 +27,6 @@ void timer_setup(void);
 void s1_s2_setup(void);
 void format_time (void);
 void Make_lap (void);
-void printString(char *);
 void core_initialize(void);
 void screen_update(void);
 void pulsa_e(void);

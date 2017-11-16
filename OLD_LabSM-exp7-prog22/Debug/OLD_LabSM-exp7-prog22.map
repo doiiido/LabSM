@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v16.9.3                     
 ******************************************************************************
->> Linked Sat Sep 02 13:40:15 2017
+>> Linked Thu Nov 16 17:10:26 2017
 
 OUTPUT FILE NAME:   <OLD_LabSM-exp7-prog22.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_noexit"  address: 00004400
@@ -85,7 +85,7 @@ MEMORY CONFIGURATION
   INT61                 0000fffa   00000002  00000002  00000000  RWIX
   INT62                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   00014400  00000190  00014270  RWIX
+  FLASH2                00010000   00014400  000002d4  0001412c  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -186,31 +186,41 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.obj (.reset)
 
-.text      0    00010000    00000190     
-                  00010000    00000078     main.obj (.text:lcd_init)
-                  00010078    00000048     main.obj (.text:main)
-                  000100c0    0000002a     main.obj (.text:I2C_config)
-                  000100ea    00000026     main.obj (.text:lcd_pins)
-                  00010110    0000001c     main.obj (.text:lcd_Byte)
-                  0001012c    00000016     main.obj (.text:pulsa_e)
-                  00010142    00000012     main.obj (.text:time_delay)
-                  00010154    00000010     main.obj (.text:lcd_clr)
-                  00010164    00000010     main.obj (.text:lcd_nib)
-                  00010174    0000000a     main.obj (.text:lcd_cmd)
-                  0001017e    00000008     main.obj (.text:Instruction_mode)
-                  00010186    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
-                  0001018c    00000004                            : pre_init.obj (.text:_system_pre_init)
+.text      0    00010000    000002d4     
+                  00010000    0000007e     main.obj (.text:main)
+                  0001007e    00000078     main.obj (.text:lcd_init)
+                  000100f6    00000070     main.obj (.text:itoa)
+                  00010166    0000002e     main.obj (.text:I2C_config)
+                  00010194    0000002e     main.obj (.text:lcd_cursor)
+                  000101c2    0000002c     rts430x_lc_rd_eabi.lib : div16s.obj (.text)
+                  000101ee    00000026     main.obj (.text:lcd_pins)
+                  00010214    0000001c     main.obj (.text:lcd_Byte)
+                  00010230    00000018     rts430x_lc_rd_eabi.lib : mult16_f5hw.obj (.text)
+                  00010248    00000016     main.obj (.text:pulsa_e)
+                  0001025e    00000016     rts430x_lc_rd_eabi.lib : div16u.obj (.text)
+                  00010274    00000012     main.obj (.text:time_delay)
+                  00010286    00000010     main.obj (.text:lcd_clr)
+                  00010296    00000010     main.obj (.text:lcd_nib)
+                  000102a6    0000000a     main.obj (.text:lcd_char)
+                  000102b0    0000000a     main.obj (.text:lcd_cmd)
+                  000102ba    00000008     main.obj (.text:Data_mode)
+                  000102c2    00000008     main.obj (.text:Instruction_mode)
+                  000102ca    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
+                  000102d0    00000004                            : pre_init.obj (.text:_system_pre_init)
 
 MODULE SUMMARY
 
        Module             code   ro data   rw data
        ------             ----   -------   -------
     .\
-       main.obj           390    0         0      
+       main.obj           624    0         0      
     +--+------------------+------+---------+---------+
-       Total:             390    0         0      
+       Total:             624    0         0      
                                                   
     C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.3.LTS\lib\rts430x_lc_rd_eabi.lib
+       div16s.obj         44     0         0      
+       mult16_f5hw.obj    24     0         0      
+       div16u.obj         22     0         0      
        boot_special.obj   18     0         0      
        isr_trap.obj       8      0         0      
        exit.obj           6      0         0      
@@ -239,11 +249,11 @@ MODULE SUMMARY
        int61.obj          0      2         0      
        int62.obj          0      2         0      
     +--+------------------+------+---------+---------+
-       Total:             36     46        0      
+       Total:             126    46        0      
                                                   
        Stack:             0      0         160    
     +--+------------------+------+---------+---------+
-       Grand Total:       426    46        160    
+       Grand Total:       750    46        160    
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -332,7 +342,7 @@ address   name
 00000732  ADC12MEM9                    
 00000733  ADC12MEM9_H                  
 00000732  ADC12MEM9_L                  
-00010186  C$$EXIT                      
+000102ca  C$$EXIT                      
 000008c0  CBCTL0                       
 000008c1  CBCTL0_H                     
 000008c0  CBCTL0_L                     
@@ -409,6 +419,7 @@ address   name
 0000050e  DMAIV                        
 0000050f  DMAIV_H                      
 0000050e  DMAIV_L                      
+000102ba  Data_mode                    
 00000140  FCTL1                        
 00000141  FCTL1_H                      
 00000140  FCTL1_L                      
@@ -418,8 +429,8 @@ address   name
 00000146  FCTL4                        
 00000147  FCTL4_H                      
 00000146  FCTL4_L                      
-000100c0  I2C_config                   
-0001017e  Instruction_mode             
+00010166  I2C_config                   
+000102c2  Instruction_mode             
 000004c4  MAC                          
 000004da  MAC32H                       
 000004db  MAC32H_H                     
@@ -1030,20 +1041,28 @@ ffffffff  __TI_pprof_out_hndl
 ffffffff  __TI_prof_data_size          
 ffffffff  __TI_prof_data_start         
 ffffffff  __c_args__                   
+000101c2  __mspabi_divi                
+0001025e  __mspabi_divu                
+00010230  __mspabi_mpyi_f5hw           
+000101c2  __mspabi_remi                
+0001025e  __mspabi_remu                
 00004400  _c_int00_noinit_noargs_noexit
 0000fffe  _reset_vector                
 00004360  _stack                       
-0001018c  _system_pre_init             
-00010186  abort                        
-00010110  lcd_Byte                     
-00010154  lcd_clr                      
-00010174  lcd_cmd                      
-00010000  lcd_init                     
-00010164  lcd_nib                      
-000100ea  lcd_pins                     
-00010078  main                         
-0001012c  pulsa_e                      
-00010142  time_delay                   
+000102d0  _system_pre_init             
+000102ca  abort                        
+000100f6  itoa                         
+00010214  lcd_Byte                     
+000102a6  lcd_char                     
+00010286  lcd_clr                      
+000102b0  lcd_cmd                      
+00010194  lcd_cursor                   
+0001007e  lcd_init                     
+00010296  lcd_nib                      
+000101ee  lcd_pins                     
+00010000  main                         
+00010248  pulsa_e                      
+00010274  time_delay                   
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -1826,23 +1845,32 @@ address   name
 0000fffa  __TI_int61                   
 0000fffc  __TI_int62                   
 0000fffe  _reset_vector                
-00010000  lcd_init                     
-00010078  main                         
-000100c0  I2C_config                   
-000100ea  lcd_pins                     
-00010110  lcd_Byte                     
-0001012c  pulsa_e                      
-00010142  time_delay                   
-00010154  lcd_clr                      
-00010164  lcd_nib                      
-00010174  lcd_cmd                      
-0001017e  Instruction_mode             
-00010186  C$$EXIT                      
-00010186  abort                        
-0001018c  _system_pre_init             
+00010000  main                         
+0001007e  lcd_init                     
+000100f6  itoa                         
+00010166  I2C_config                   
+00010194  lcd_cursor                   
+000101c2  __mspabi_divi                
+000101c2  __mspabi_remi                
+000101ee  lcd_pins                     
+00010214  lcd_Byte                     
+00010230  __mspabi_mpyi_f5hw           
+00010248  pulsa_e                      
+0001025e  __mspabi_divu                
+0001025e  __mspabi_remu                
+00010274  time_delay                   
+00010286  lcd_clr                      
+00010296  lcd_nib                      
+000102a6  lcd_char                     
+000102b0  lcd_cmd                      
+000102ba  Data_mode                    
+000102c2  Instruction_mode             
+000102ca  C$$EXIT                      
+000102ca  abort                        
+000102d0  _system_pre_init             
 ffffffff  __TI_pprof_out_hndl          
 ffffffff  __TI_prof_data_size          
 ffffffff  __TI_prof_data_start         
 ffffffff  __c_args__                   
 
-[794 symbols]
+[803 symbols]
