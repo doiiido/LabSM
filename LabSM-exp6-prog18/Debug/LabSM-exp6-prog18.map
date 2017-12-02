@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v16.9.4                     
 ******************************************************************************
->> Linked Thu Nov 16 21:03:16 2017
+>> Linked Sat Dec 02 00:06:55 2017
 
 OUTPUT FILE NAME:   <LabSM-exp6-prog18.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_noexit"  address: 00004416
@@ -85,7 +85,7 @@ MEMORY CONFIGURATION
   INT61                 0000fffa   00000002  00000002  00000000  RWIX
   INT62                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   00014400  000002a2  0001415e  RWIX
+  FLASH2                00010000   00014400  000002a0  00014160  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -187,7 +187,7 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.obj (.reset)
 
-.text      0    00010000    000002a2     
+.text      0    00010000    000002a0     
                   00010000    0000007c     LCD.obj (.text:lcd_init)
                   0001007c    00000062     main.obj (.text:main)
                   000100de    00000038     I2C.obj (.text:I2C_config)
@@ -201,12 +201,12 @@ SYSNMI     0    0000fffc    00000002
                   00010210    00000016     LCD.obj (.text:Data_mode)
                   00010226    00000016     LCD.obj (.text:Instruction_mode)
                   0001023c    00000016     LCD.obj (.text:lcdBacklightON)
-                  00010252    00000012     I2C.obj (.text:delay_100us)
-                  00010264    00000012     LCD.obj (.text:lcd_char)
-                  00010276    00000012     LCD.obj (.text:lcd_cmd)
-                  00010288    00000010     LCD.obj (.text:lcd_clr)
-                  00010298    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
-                  0001029e    00000004                            : pre_init.obj (.text:_system_pre_init)
+                  00010252    00000012     LCD.obj (.text:lcd_char)
+                  00010264    00000012     LCD.obj (.text:lcd_cmd)
+                  00010276    00000010     I2C.obj (.text:delay_100us)
+                  00010286    00000010     LCD.obj (.text:lcd_clr)
+                  00010296    00000006     rts430x_lc_rd_eabi.lib : exit.obj (.text:abort)
+                  0001029c    00000004                            : pre_init.obj (.text:_system_pre_init)
 
 MODULE SUMMARY
 
@@ -215,9 +215,9 @@ MODULE SUMMARY
     .\
        LCD.obj            392    0         0      
        main.obj           180    2         0      
-       I2C.obj            114    0         0      
+       I2C.obj            112    0         0      
     +--+------------------+------+---------+---------+
-       Total:             686    2         0      
+       Total:             684    2         0      
                                                   
     C:\ti\ccsv7\tools\compiler\ti-cgt-msp430_16.9.4.LTS\lib\rts430x_lc_rd_eabi.lib
        boot_special.obj   18     0         0      
@@ -251,7 +251,7 @@ MODULE SUMMARY
                                                   
        Stack:             0      0         160    
     +--+------------------+------+---------+---------+
-       Grand Total:       722    46        160    
+       Grand Total:       720    46        160    
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -340,7 +340,7 @@ address   name
 00000732  ADC12MEM9                    
 00000733  ADC12MEM9_H                  
 00000732  ADC12MEM9_L                  
-00010298  C$$EXIT                      
+00010296  C$$EXIT                      
 000008c0  CBCTL0                       
 000008c1  CBCTL0_H                     
 000008c0  CBCTL0_L                     
@@ -1043,14 +1043,14 @@ ffffffff  __c_args__
 00004416  _c_int00_noinit_noargs_noexit
 0000fffe  _reset_vector                
 00004360  _stack                       
-0001029e  _system_pre_init             
-00010298  abort                        
-00010252  delay_100us                  
+0001029c  _system_pre_init             
+00010296  abort                        
+00010276  delay_100us                  
 0001023c  lcdBacklightON               
 000101f8  lcd_Byte                     
-00010264  lcd_char                     
-00010288  lcd_clr                      
-00010276  lcd_cmd                      
+00010252  lcd_char                     
+00010286  lcd_clr                      
+00010264  lcd_cmd                      
 00010116  lcd_cursor                   
 00010000  lcd_init                     
 00010144  lcd_nib                      
@@ -1857,13 +1857,13 @@ address   name
 00010210  Data_mode                    
 00010226  Instruction_mode             
 0001023c  lcdBacklightON               
-00010252  delay_100us                  
-00010264  lcd_char                     
-00010276  lcd_cmd                      
-00010288  lcd_clr                      
-00010298  C$$EXIT                      
-00010298  abort                        
-0001029e  _system_pre_init             
+00010252  lcd_char                     
+00010264  lcd_cmd                      
+00010276  delay_100us                  
+00010286  lcd_clr                      
+00010296  C$$EXIT                      
+00010296  abort                        
+0001029c  _system_pre_init             
 ffffffff  __TI_pprof_out_hndl          
 ffffffff  __TI_prof_data_size          
 ffffffff  __TI_prof_data_start         

@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v16.9.3                     
 ******************************************************************************
->> Linked Sat Sep 02 13:40:17 2017
+>> Linked Mon Nov 27 13:43:18 2017
 
 OUTPUT FILE NAME:   <temperature reader.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_noexit"  address: 00004430

@@ -80,11 +80,11 @@ void lcd_Byte(char byte){ //recebe um byte, quebra em 2 nibbles e escreve com lc
 
 void lcd_init(void){
   Instruction_mode();  // escrevendo uma instrução: RS=0
-  lcd_nib(0x3);
+  lcd_nib(0x3); //preinicialização 8 bits- D0-D3 xxxx
   time_delay(150);
-  lcd_nib(0x3);
+  lcd_nib(0x3); //preinicialização 8 bits- D0-D3 xxxx
   time_delay(1);
-  lcd_nib(0x3);
+  lcd_nib(0x3); //preinicialização 8 bits- D0-D3 xxxx
   time_delay(1);
   lcd_nib(0x2);  //ativa modo 4 bits
   time_delay(1);

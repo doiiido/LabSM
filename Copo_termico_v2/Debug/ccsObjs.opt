@@ -1,0 +1,1 @@
+"./ADC12A.obj" "./I2C.obj" "./LCD.obj" "./UART.obj" "./main.obj" "../lnk_msp430f5529.cmd" -llibmath.a -llibc.a 
