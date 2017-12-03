@@ -15,7 +15,7 @@ void muda_faixa(char *input);
 void screen_update(int value);
 void update ();
 
-volatile int high_temp = 50, low_temp = 45;
+volatile int high_temp = 0, low_temp = 0;
 unsigned int temp_diss = 25, t_amb = 25;
 unsigned short raw_value_1, raw_value_2, raw_value_3;
 volatile int previous = 0;
@@ -76,29 +76,30 @@ void relay_control(){
                P7OUT &= ~BIT0;
                vent = 0;
            }
-       }else{
+       }else if(vent != 0){
            P7OUT &= ~BIT0;
            vent = 0;
        }
        halt = 0;
    }
-   if (!halt && temp <= low_temp - 2){
+   if (!halt && temp <= low_temp - 2 && mode != 1){
        mode = 1;
        P3OUT |= BIT6;
        P3OUT |= BIT5;
        on = 1;
    }
-   if (!halt && temp >= high_temp +2){
+   if (!halt && temp >= high_temp +2 && mode != 0){
        mode = 0;
        P3OUT &= ~BIT6;
        P3OUT &= ~BIT5;
        on = 1;
    }
    if(mode == 0){
-       if (on && (temp <= low_temp || (temp <= t_amb && temp_diss >= t_amb + 20*t_amb/temp) || temp_diss >= temp + 15)){
+       if (on && (temp <= low_temp || (temp <= t_amb && temp_diss >= t_amb + 15*t_amb/temp) || temp_diss >= temp + 15)){
            shutdown_relays();
+           on = 0;
        }
-       if (!halt && !on && temp >= high_temp && (temp >= temp_diss || temp_diss <= t_amb+10*t_amb/temp)){
+       if (!halt && !on && temp >= high_temp && (temp_diss <= temp && temp > t_amb || (temp_diss <= t_amb && temp <= t_amb))){
            P3OUT &= ~BIT5;
            P3OUT &= ~BIT6;
            on = 1;
@@ -111,21 +112,32 @@ void relay_control(){
        }
        if (on && temp >= high_temp){
            shutdown_relays();
+           on = 0;
        }
    }
 }
 
 void update () {
+    //Preset
+   if(high_temp<=0 && low_temp <=0 && med == raw_value_1){
+       if(temp>0 && temp < 35){
+           high_temp = 20;
+           low_temp = 15;
+       }else if(temp>35 && temp < 65){
+          high_temp = 50;
+          low_temp = 45;
+      }
+   }
    if(high_temp>65)    //Hard limit, plastic safe temperature
        high_temp=65;
    temp_diss = (int)(temp_diss + (int)(77-(12*raw_value_2/458)))/2;
    t_amb = (int)(raw_value_3 - 915);
    //corrigindo erro temperatura interna
-   if(vent && !on) t_amb -= 7;
-   else if(!on) t_amb -= 6;
-   else if(vent && on && mode) t_amb -= 10;
-   else if(mode && on) t_amb -=9;
-   else if (vent) t_amb -= 3;
+   if(vent==1 && on==0) t_amb -= 7;
+   else if(on == 0) t_amb -= 7;
+   else if(vent == 1 && on == 1 && mode == 1) t_amb -= 9;
+   else if(mode == 1 && on == 1) t_amb -=9;
+   else if (vent == 1) t_amb -= 3;
 
    if (has_input() == 1) {
        input = get_input();
