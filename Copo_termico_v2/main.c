@@ -72,13 +72,18 @@ void relay_control(){
            if(temp_diss > t_amb+2){
                P7OUT |= BIT0;
                vent = 1;
-           }else if(temp_diss < t_amb+1){
+           }else if(temp_diss < t_amb){
                P7OUT &= ~BIT0;
                vent = 0;
            }
-       }else if(vent != 0){
-           P7OUT &= ~BIT0;
-           vent = 0;
+       }else{
+           if(vent != 1 && temp_diss <= t_amb+3){
+               P7OUT |= BIT0;
+               vent = 1;
+           }else  if(vent != 0 && temp_diss >= t_amb+5){
+               P7OUT &= ~BIT0;
+               vent = 0;
+           }
        }
        halt = 0;
    }
@@ -120,13 +125,9 @@ void relay_control(){
 void update () {
     //Preset
    if(high_temp<=0 && low_temp <=0 && med == raw_value_1){
-       if(temp>0 && temp < 35){
-           high_temp = 20;
-           low_temp = 15;
-       }else if(temp>35 && temp < 65){
-          high_temp = 50;
-          low_temp = 45;
-      }
+       high_temp = temp +2;
+       low_temp = temp -2;
+       screen_update(temp);
    }
    if(high_temp>65)    //Hard limit, plastic safe temperature
        high_temp=65;
