@@ -10,6 +10,6 @@
 
 void setADC();
 
-void setDMA(unsigned short *saida_0, unsigned short *saida_1);
+void setDMA(unsigned short *saida_6_1, unsigned short *saida_6_2, unsigned short *saida_t_amb);
 
 #endif /* ADC12A_H_ */

@@ -15,15 +15,14 @@ void muda_faixa(char *input);
 void screen_update(int value);
 void update ();
 
-volatile int high_temp = 55, low_temp = 45;
-int temp_diss;
-unsigned short raw_value_1, raw_value_2;
+volatile int high_temp = 50, low_temp = 45;
+unsigned int temp_diss = 25, t_amb = 25;
+unsigned short raw_value_1, raw_value_2, raw_value_3;
 volatile int previous = 0;
-volatile int  on = 0, mode = 0, halt = 0;
+volatile int  on = 0, mode = 1, halt = 0, vent = 0;
 char *input;
-int temp;
-int med = 0;
-int out = 0;
+int temp = 25;
+int med = 25;
 
 
 int main(void) {
@@ -33,7 +32,7 @@ int main(void) {
     WDTCTL = WDTPW | WDTHOLD;   // Stop watchdog timer
     UART_setup(input);
     setADC();
-    setDMA(&raw_value_1, &raw_value_2);
+    setDMA(&raw_value_1, &raw_value_2, &raw_value_3);
     pin_config();
     lcd_pins();
     lcd_init();
@@ -63,42 +62,43 @@ void shutdown_relays(){
 }
 
 void relay_control(){
-   if ( temp_diss >= 65){
+   if(temp_diss >= 65){//Controle do ventilador
        shutdown_relays();
        halt = 1;
+       vent = 0;
        P7OUT &= ~BIT0;
    }else{
        if (mode == 1){
-           if(temp_diss > 25)
+           if(temp_diss > t_amb+2){
                P7OUT |= BIT0;
-           else if(temp_diss < 23)
+               vent = 1;
+           }else if(temp_diss < t_amb+1){
                P7OUT &= ~BIT0;
+               vent = 0;
+           }
        }else{
            P7OUT &= ~BIT0;
+           vent = 0;
        }
        halt = 0;
    }
-   if (!halt && temp <= low_temp - 5){
+   if (!halt && temp <= low_temp - 2){
        mode = 1;
-       if(!on){
-           P3OUT |= BIT6;
-           P3OUT |= BIT5;
-           on = 1;
-       }
+       P3OUT |= BIT6;
+       P3OUT |= BIT5;
+       on = 1;
    }
-   if (!halt && temp >= high_temp +5){
+   if (!halt && temp >= high_temp +2){
        mode = 0;
-       if(!on){
-           P3OUT &= ~BIT6;
-           P3OUT &= ~BIT5;
-           on = 1;
-       }
+       P3OUT &= ~BIT6;
+       P3OUT &= ~BIT5;
+       on = 1;
    }
    if(mode == 0){
-       if (on && temp <= low_temp){
+       if (on && (temp <= low_temp || (temp <= t_amb && temp_diss >= t_amb + 20*t_amb/temp) || temp_diss >= temp + 15)){
            shutdown_relays();
        }
-       if (!halt && !on && temp >= high_temp){
+       if (!halt && !on && temp >= high_temp && (temp >= temp_diss || temp_diss <= t_amb+10*t_amb/temp)){
            P3OUT &= ~BIT5;
            P3OUT &= ~BIT6;
            on = 1;
@@ -118,7 +118,15 @@ void relay_control(){
 void update () {
    if(high_temp>65)    //Hard limit, plastic safe temperature
        high_temp=65;
-   temp_diss = (int)(77-(12*raw_value_2/458));
+   temp_diss = (int)(temp_diss + (int)(77-(12*raw_value_2/458)))/2;
+   t_amb = (int)(raw_value_3 - 915);
+   //corrigindo erro temperatura interna
+   if(vent && !on) t_amb -= 7;
+   else if(!on) t_amb -= 6;
+   else if(vent && on && mode) t_amb -= 10;
+   else if(mode && on) t_amb -=9;
+   else if (vent) t_amb -= 3;
+
    if (has_input() == 1) {
        input = get_input();
        clear_input();
@@ -155,7 +163,11 @@ void screen_update(int value){
     word_send("Temperatura do dissipador: \n \r");
     itoa(temp_diss, buff);
     word_send(buff);
-    word_send("\n \r");
+    word_send(" C \n \r");
+    word_send("Temperatura ambiente: \n \r");
+    itoa(t_amb, buff);
+    word_send(buff);
+    word_send(" C \n \r");
 }
 
 void muda_faixa(char *input){
