@@ -77,10 +77,10 @@ void relay_control(){
                vent = 0;
            }
        }else{
-           if(vent != 1 && temp_diss <= t_amb+3){
+           if(vent != 1 && temp_diss <= t_amb+1){
                P7OUT |= BIT0;
                vent = 1;
-           }else  if(vent != 0 && temp_diss >= t_amb+5){
+           }else  if(vent != 0 && temp_diss > t_amb+5){
                P7OUT &= ~BIT0;
                vent = 0;
            }
@@ -100,11 +100,13 @@ void relay_control(){
        on = 1;
    }
    if(mode == 0){
-       if (on && (temp <= low_temp || (temp <= t_amb && temp_diss >= t_amb + 15*t_amb/temp) || temp_diss >= temp + 15)){
+       if (on && (temp <= low_temp
+               || (temp <= t_amb && temp_diss >= t_amb + (int)((float)(20.0*(float)t_amb/(float)temp)))
+               || temp_diss >= temp + 20)){
            shutdown_relays();
            on = 0;
        }
-       if (!halt && !on && temp >= high_temp && (temp_diss <= temp && temp > t_amb || (temp_diss <= t_amb && temp <= t_amb))){
+       if (!halt && !on && temp >= high_temp && (temp_diss <= temp+2 && temp > t_amb || (temp_diss <= t_amb+2 && temp <= t_amb))){
            P3OUT &= ~BIT5;
            P3OUT &= ~BIT6;
            on = 1;
